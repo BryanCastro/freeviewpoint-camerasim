@@ -48,11 +48,14 @@ public:
 
 	void RenderImages();
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
+	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
+	void SetFarClipDistance(float FarClipDistance);
 
 	UPROPERTY()
 	UMaterialInstance* DepthMaterialInstance;
-
 	FTimerHandle UnusedHandle;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -61,7 +64,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-	float TimeAccumulator=0;
-	
+	float TimeAccumulator;
+	float FarClip;
+	float NearClip = 0.1f;
 
 };

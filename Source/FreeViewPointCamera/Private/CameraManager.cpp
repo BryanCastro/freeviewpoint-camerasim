@@ -7,6 +7,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Math/UnrealMathUtility.h"
+#include "Json.h"
+#include "JsonUtilities.h"
+#include "Json.h"
+#include "JsonUtilities.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -51,6 +57,13 @@ void ACameraManager::BeginPlay()
 
 	// Get all ADepthCameraActor in World and store in TArray called DepthCameras
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADepthCameraActor::StaticClass(), DepthCameras);
+	SpawnCameras();
+	for (auto Camera : DepthCameras) {
+		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
+		DepthCamera->SetFarClipDistance(SphereRadius * 2);
+		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
+		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
+	}
 }
 
 void ACameraManager::SpawnCameras() {
@@ -91,7 +104,6 @@ void ACameraManager::SpawnCamerasInSphere() {
 		if(NewCamera){
 			DepthCameras.Add(NewCamera);
 		}
-    	
 	}
 }
 
@@ -112,8 +124,38 @@ void ACameraManager::Tick(float DeltaTime)
 }
 
 void ACameraManager::RenderImages() {
+    // Create a new JSON object.
+    TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+
+
 	for (auto camera : DepthCameras) {
 		Cast<ADepthCameraActor>(camera)->RenderImages();
+
+		  // Get the camera's world position and rotation.
+        FVector Position = camera->GetActorLocation();
+        FRotator Rotation = camera->GetActorRotation();
+
+		
+		float Tolerance = 0.00001f;
+		Rotation.Pitch = FMath::IsNearlyZero(Rotation.Pitch, Tolerance) ? 0.0f : Rotation.Pitch;
+		Rotation.Yaw = FMath::IsNearlyZero(Rotation.Yaw, Tolerance) ? 0.0f : Rotation.Yaw;
+		Rotation.Roll = FMath::IsNearlyZero(Rotation.Roll, Tolerance) ? 0.0f : Rotation.Roll;
+		
+
+		// Create a new JSON object for this camera.
+        TSharedPtr<FJsonObject> CameraObject = MakeShareable(new FJsonObject);
+        CameraObject->SetStringField("World Position", Position.ToString());
+        CameraObject->SetStringField("World Rotation", Rotation.ToString());
+
+		// Add the camera object to the main JSON object.
+        JsonObject->SetObjectField(camera->GetName(), CameraObject);
 	}
+	// Convert the JSON object to a string.
+	FString JsonString;
+	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&JsonString);
+	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
+
+		// Save the JSON string to a file.
+	FFileHelper::SaveStringToFile(JsonString, *(FPaths::ProjectDir() + FString("/Images/CameraData.json")));
 }
 

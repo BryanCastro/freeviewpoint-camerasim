@@ -1,0 +1,82 @@
+{
+	"BP_DepthCameraActor_C_0":
+	{
+		"World Position": "X=0.000 Y=0.000 Z=1000.000",
+		"World Rotation": "P=-90.000000 Y=180.000000 R=180.000000"
+	},
+	"BP_DepthCameraActor_C_1":
+	{
+		"World Position": "X=-367.864 Y=-336.994 Z=866.667",
+		"World Rotation": "P=-60.073567 Y=42.492247 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_2":
+	{
+		"World Position": "X=59.438 Y=677.266 Z=733.333",
+		"World Rotation": "P=-47.166570 Y=-95.015488 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_3":
+	{
+		"World Position": "X=486.751 Y=-634.880 Z=600.000",
+		"World Rotation": "P=-36.869903 Y=127.476732 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_4":
+	{
+		"World Position": "X=-870.914 Y=154.051 Z=466.667",
+		"World Rotation": "P=-27.818137 Y=-10.030996 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_5":
+	{
+		"World Position": "X=795.500 Y=506.033 Z=333.333",
+		"World Rotation": "P=-19.471225 Y=-147.538776 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_6":
+	{
+		"World Position": "X=-254.358 Y=-946.204 Z=200.000",
+		"World Rotation": "P=-11.536961 Y=74.953511 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_7":
+	{
+		"World Position": "X=-459.884 Y=885.473 Z=66.667",
+		"World Rotation": "P=-3.822553 Y=-62.554227 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_8":
+	{
+		"World Position": "X=937.232 Y=-342.273 Z=-66.667",
+		"World Rotation": "P=3.822559 Y=159.937999 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_9":
+	{
+		"World Position": "X=-905.669 Y=-373.850 Z=-200.000",
+		"World Rotation": "P=11.536965 Y=22.430280 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_10":
+	{
+		"World Position": "X=399.604 Y=853.935 Z=-333.333",
+		"World Rotation": "P=19.471228 Y=-115.077543 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_11":
+	{
+		"World Position": "X=264.700 Y=-843.894 Z=-466.667",
+		"World Rotation": "P=27.818137 Y=107.414837 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_12":
+	{
+		"World Position": "X=-692.170 Y=401.125 Z=-600.000",
+		"World Rotation": "P=36.869892 Y=-30.093034 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_13":
+	{
+		"World Position": "X=664.011 Y=145.984 Z=-733.333",
+		"World Rotation": "P=47.166574 Y=-167.600666 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_14":
+	{
+		"World Position": "X=-286.923 Y=-408.122 Z=-866.667",
+		"World Rotation": "P=60.073575 Y=54.891511 R=0.000000"
+	},
+	"BP_DepthCameraActor_C_15":
+	{
+		"World Position": "X=0.000 Y=0.000 Z=-1000.000",
+		"World Rotation": "P=90.000000 Y=0.000000 R=180.000000"
+	}
+}
