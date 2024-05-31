@@ -29,8 +29,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-
+	#if WITH_EDITOR
+    	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+	#endif
 	TArray<AActor*> DepthCameras;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings", meta=(AllowPrivateAccess="true"))

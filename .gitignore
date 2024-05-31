@@ -72,3 +72,10 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Ignore Builds folder
+Builds/*
+
+# Ignore ParagonTwinblast folder
+Content/ParagonTwinblast/*
+Content/StarterContent/HDRI/*

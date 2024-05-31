@@ -27,6 +27,8 @@ ACameraManager::ACameraManager()
 
 }
 
+#if WITH_EDITOR
+
 void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
@@ -39,6 +41,9 @@ void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 		SpawnCameras();
 	}
 }
+
+#endif
+
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
@@ -127,35 +132,67 @@ void ACameraManager::RenderImages() {
     // Create a new JSON object.
     TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
-
+  
 	for (auto camera : DepthCameras) {
 		Cast<ADepthCameraActor>(camera)->RenderImages();
 
-		  // Get the camera's world position and rotation.
-        FVector Position = camera->GetActorLocation();
-        FRotator Rotation = camera->GetActorRotation();
+		// Get the camera's world position and rotation.
+		FVector Position = camera->GetActorLocation();
+		FRotator Rotation = camera->GetActorRotation();
 
-		
 		float Tolerance = 0.00001f;
 		Rotation.Pitch = FMath::IsNearlyZero(Rotation.Pitch, Tolerance) ? 0.0f : Rotation.Pitch;
 		Rotation.Yaw = FMath::IsNearlyZero(Rotation.Yaw, Tolerance) ? 0.0f : Rotation.Yaw;
 		Rotation.Roll = FMath::IsNearlyZero(Rotation.Roll, Tolerance) ? 0.0f : Rotation.Roll;
-		
+
+		// Create new JSON objects for the position and rotation.
+		TSharedPtr<FJsonObject> PositionObject = MakeShareable(new FJsonObject);
+		PositionObject->SetNumberField("X", Position.X);
+		PositionObject->SetNumberField("Y", Position.Y);
+		PositionObject->SetNumberField("Z", Position.Z);
+
+		TSharedPtr<FJsonObject> RotationObject = MakeShareable(new FJsonObject);
+		RotationObject->SetNumberField("P", Rotation.Pitch);
+		RotationObject->SetNumberField("Y", Rotation.Yaw);
+		RotationObject->SetNumberField("R", Rotation.Roll);
+
+		// Get the Filmback settings.
+		float SensorWidth = camera->GetFilmbackSensorWidth();
+		float SensorHeight = camera->GetFilmbackSensorHeight();
+		float SensorAspectRatio = camera->GetFilmbackSensorAspectRatio();
+
+		// Create a new JSON object for the Filmback settings.
+		TSharedPtr<FJsonObject> FilmbackObject = MakeShareable(new FJsonObject);
+		FilmbackObject->SetNumberField("SensorWidth", SensorWidth);
+		FilmbackObject->SetNumberField("SensorHeight", SensorHeight);
+		FilmbackObject->SetNumberField("SensorAspectRatio", SensorAspectRatio);
+
+		// Get the Lens settings.
+		float MinFocalLength = camera->GetMinFocalLength();
+		float MaxFocalLength = camera->GetMaxFocalLength();
+		// Add other lens settings here...
+
+		// Create a new JSON object for the Lens settings.
+		TSharedPtr<FJsonObject> LensObject = MakeShareable(new FJsonObject);
+		LensObject->SetNumberField("MinFocalLength", MinFocalLength);
+		LensObject->SetNumberField("MaxFocalLength", MaxFocalLength);
+		// Add other lens settings here...
 
 		// Create a new JSON object for this camera.
-        TSharedPtr<FJsonObject> CameraObject = MakeShareable(new FJsonObject);
-        CameraObject->SetStringField("World Position", Position.ToString());
-        CameraObject->SetStringField("World Rotation", Rotation.ToString());
+		TSharedPtr<FJsonObject> CameraObject = MakeShareable(new FJsonObject);
+		CameraObject->SetObjectField("World Position", PositionObject);
+		CameraObject->SetObjectField("World Rotation", RotationObject);
+		CameraObject->SetObjectField("Filmback", FilmbackObject);
+		CameraObject->SetObjectField("Lens", LensObject);
 
 		// Add the camera object to the main JSON object.
-        JsonObject->SetObjectField(camera->GetName(), CameraObject);
+		JsonObject->SetObjectField(camera->GetName(), CameraObject);
 	}
-	// Convert the JSON object to a string.
-	FString JsonString;
-	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&JsonString);
-	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
+    // Convert the JSON object to a string.
+    FString JsonString;
+    TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&JsonString);
+    FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
 
-		// Save the JSON string to a file.
-	FFileHelper::SaveStringToFile(JsonString, *(FPaths::ProjectDir() + FString("/Images/CameraData.json")));
+    // Save the JSON string to a file.
+    FFileHelper::SaveStringToFile(JsonString, *(FPaths::ProjectDir() + FString("/Images/CameraData.json")));
 }
-
