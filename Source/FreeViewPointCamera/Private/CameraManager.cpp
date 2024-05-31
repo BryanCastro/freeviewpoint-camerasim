@@ -28,22 +28,29 @@ void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 	if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, NumOfCameras)) {
 		
 		SpawnCameras();
-		
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, SphereRadius)) {
+		SpawnCameras();
 	}
 }
-
 // Called when the game starts or when spawned
 void ACameraManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	/*Do Not Spawn Cameras on BeginPlay! Use ones spawned in editor
 	if (CameraActorClassRef) {
 		SpawnCameras();
 	}
+
 	else {
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Failed to Load Camera Blueprint Class Reference!")));
 	}
+		*/
+
+	// Get all ADepthCameraActor in World and store in TArray called DepthCameras
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADepthCameraActor::StaticClass(), DepthCameras);
 }
 
 void ACameraManager::SpawnCameras() {
