@@ -23,16 +23,36 @@ public:
 	UCineCameraComponent* Camera;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneCaptureComponent2D* SceneCapture;
-
-	UPROPERTY(EditAnywhere, Category = "Render Settings")
-	UTextureRenderTarget2D* RenderTarget;
+	USceneCaptureComponent2D* SceneRGBDCapture;
+	UPROPERTY(VisibleAnywhere)
+	USceneCaptureComponent2D* SceneRGBCapture;
+	
+	UPROPERTY()
+	UTextureRenderTarget2D* RenderRGBDTarget;
+	UPROPERTY()
+	UTextureRenderTarget2D* RenderRGBTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	int ResolutionX=256;
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	int ResolutionY=256;
+	UPROPERTY(EditAnywhere, Category = "Render Settings")
+	int FramesToCapture = 10;
 
+	int CurrentFramesCaptured = 0;
+
+	UFUNCTION()
+	const FVector GetPosition();
+	UFUNCTION()
+	const FRotator GetRotation();
+
+	void RenderImages();
+	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
+
+	UPROPERTY()
+	UMaterialInstance* DepthMaterialInstance;
+
+	FTimerHandle UnusedHandle;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,5 +60,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+private:
+	float TimeAccumulator=0;
+	
 
 };
