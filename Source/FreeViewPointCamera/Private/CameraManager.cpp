@@ -13,6 +13,7 @@
 #include "JsonUtilities.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "CineCameraComponent.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -107,6 +108,7 @@ void ACameraManager::SpawnCamerasInSphere() {
 
 		AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, SpawnLocation, SpawnRotation, SpawnParams);
 		if(NewCamera){
+			Cast<ADepthCameraActor>(NewCamera)->SetCameraName(i);
 			DepthCameras.Add(NewCamera);
 		}
 	}
@@ -134,7 +136,8 @@ void ACameraManager::RenderImages() {
 
   
 	for (auto camera : DepthCameras) {
-		Cast<ADepthCameraActor>(camera)->RenderImages();
+		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
+		DepthCamera->RenderImages();
 
 		// Get the camera's world position and rotation.
 		FVector Position = camera->GetActorLocation();
@@ -156,10 +159,13 @@ void ACameraManager::RenderImages() {
 		RotationObject->SetNumberField("Y", Rotation.Yaw);
 		RotationObject->SetNumberField("R", Rotation.Roll);
 
+		
 		// Get the Filmback settings.
-		float SensorWidth = camera->GetFilmbackSensorWidth();
-		float SensorHeight = camera->GetFilmbackSensorHeight();
-		float SensorAspectRatio = camera->GetFilmbackSensorAspectRatio();
+		FCameraFilmbackSettings FilmbackSettings = DepthCamera->Camera->Filmback;
+		float SensorWidth = FilmbackSettings.SensorWidth;
+		float SensorHeight = FilmbackSettings.SensorHeight;
+		float SensorAspectRatio = FilmbackSettings.SensorAspectRatio;
+
 
 		// Create a new JSON object for the Filmback settings.
 		TSharedPtr<FJsonObject> FilmbackObject = MakeShareable(new FJsonObject);
@@ -167,9 +173,12 @@ void ACameraManager::RenderImages() {
 		FilmbackObject->SetNumberField("SensorHeight", SensorHeight);
 		FilmbackObject->SetNumberField("SensorAspectRatio", SensorAspectRatio);
 
+
+		FCameraLensSettings CameraLensSettings = DepthCamera->Camera->LensSettings;
+
 		// Get the Lens settings.
-		float MinFocalLength = camera->GetMinFocalLength();
-		float MaxFocalLength = camera->GetMaxFocalLength();
+		float MinFocalLength = CameraLensSettings.MinFocalLength;
+		float MaxFocalLength = CameraLensSettings.MaxFocalLength;
 		// Add other lens settings here...
 
 		// Create a new JSON object for the Lens settings.
@@ -178,15 +187,22 @@ void ACameraManager::RenderImages() {
 		LensObject->SetNumberField("MaxFocalLength", MaxFocalLength);
 		// Add other lens settings here...
 
+		TSharedPtr<FJsonObject> OtherObject = MakeShareable(new FJsonObject);
+		OtherObject->SetNumberField("Distance from Scene(cm)", SphereRadius);
+		OtherObject->SetNumberField("Near Clip Plane", 0.1f);
+		OtherObject->SetNumberField("Far Clip Plane", SphereRadius * 2);
+		
 		// Create a new JSON object for this camera.
 		TSharedPtr<FJsonObject> CameraObject = MakeShareable(new FJsonObject);
 		CameraObject->SetObjectField("World Position", PositionObject);
 		CameraObject->SetObjectField("World Rotation", RotationObject);
 		CameraObject->SetObjectField("Filmback", FilmbackObject);
 		CameraObject->SetObjectField("Lens", LensObject);
+		CameraObject->SetObjectField("Other", OtherObject);
 
 		// Add the camera object to the main JSON object.
-		JsonObject->SetObjectField(camera->GetName(), CameraObject);
+		JsonObject->SetObjectField(DepthCamera->GetCameraName(), CameraObject);
+		
 	}
     // Convert the JSON object to a string.
     FString JsonString;

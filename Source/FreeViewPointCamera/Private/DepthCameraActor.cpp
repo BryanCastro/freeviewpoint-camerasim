@@ -32,13 +32,13 @@ ADepthCameraActor::ADepthCameraActor()
 	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget "));
 
     // Initialize DepthMaterialInstance
-static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialInstance(TEXT("MaterialInstanceConstant'/Game/Materials/MI_PostProcessDepth.MI_PostProcessDepth'"));
-    if (MaterialInstance.Succeeded()) {
-        DepthMaterialInstance = MaterialInstance.Object;
-    } else {
-        if (GEngine)
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialInstance(TEXT("MaterialInstanceConstant'/Game/Materials/MI_PostProcessDepth.MI_PostProcessDepth'"));
+	if (MaterialInstance.Succeeded()) {
+		DepthMaterialInstance = MaterialInstance.Object;
+	} else {
+		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("DepthCameraActor.cpp: Failed to Load MI_PostProcessDepth in Constructor!")));
-    }
+	}
 
 }
 
@@ -100,6 +100,10 @@ void ADepthCameraActor::SetFarClipDistance(float FarClipDistance) {
 	FarClip = FarClipDistance;
 }
 
+void ADepthCameraActor::SetCameraName(int index) {
+	CameraName = FString::Printf(TEXT("Camera_%d"), index);
+}
+
 void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture) {
 	int32 RandomID = FMath::RandRange(1, 100000);
 
@@ -133,6 +137,10 @@ void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture) 
 
 }
 
+FString ADepthCameraActor::GetCameraName() {
+	return CameraName;
+}
+
 void ADepthCameraActor::RenderImages(){
 	// Update the time accumulator
 	//TimeAccumulator += DeltaTime;
@@ -144,10 +152,10 @@ void ADepthCameraActor::RenderImages(){
 		// Capture the scene to update the render target
 		SceneRGBDCapture->CaptureScene();
 		SceneRGBCapture->CaptureScene();
-		FString CameraName = GetName();
+		FString Name = GetCameraName();
 		// Call the function to save the render targets
-		SaveRenderTargetToDisk(RenderRGBDTarget, CameraName + FString("RGBD"), true);
-		SaveRenderTargetToDisk(RenderRGBTarget, CameraName + FString("RGB"));
+		SaveRenderTargetToDisk(RenderRGBDTarget, Name + FString("_RGBD"), true);
+		SaveRenderTargetToDisk(RenderRGBTarget, Name + FString("_RGB"));
 
 		// Reset the time accumulator
 		TimeAccumulator -= (1.0f / 24.0f);

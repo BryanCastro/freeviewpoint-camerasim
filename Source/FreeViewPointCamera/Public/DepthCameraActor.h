@@ -50,6 +50,9 @@ public:
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
 	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
 	void SetFarClipDistance(float FarClipDistance);
+	FString GetCameraName();
+	void SetCameraName(int index);
+
 
 	UPROPERTY()
 	UMaterialInstance* DepthMaterialInstance;
@@ -59,6 +62,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Render Settings")
+	FString CameraName;
 
 public:	
 	// Called every frame
