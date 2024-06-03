@@ -62,8 +62,8 @@ void ADepthCameraActor::BeginPlay()
 
 	SceneRGBDCapture->TextureTarget = RenderRGBDTarget;
 	SceneRGBDCapture->CaptureSource = ESceneCaptureSource::SCS_SceneDepth;
-	SceneRGBDCapture->bCaptureEveryFrame = true;
-	SceneRGBDCapture->bCaptureOnMovement = true;
+	SceneRGBDCapture->bCaptureEveryFrame = false;
+	SceneRGBDCapture->bCaptureOnMovement = false;
 
 	// Enable important flags for capturing lighting
 	SceneRGBDCapture->ShowFlags.SetLighting(true);
@@ -73,8 +73,8 @@ void ADepthCameraActor::BeginPlay()
 
 	SceneRGBCapture->TextureTarget = RenderRGBTarget;
 	SceneRGBCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-	SceneRGBCapture->bCaptureEveryFrame = true;
-	SceneRGBCapture->bCaptureOnMovement = true;
+	SceneRGBCapture->bCaptureEveryFrame = false;
+	SceneRGBCapture->bCaptureOnMovement = false;
 
 	// Enable important flags for capturing lighting
 	SceneRGBCapture->ShowFlags.SetLighting(true);

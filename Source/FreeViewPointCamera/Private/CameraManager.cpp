@@ -69,6 +69,7 @@ void ACameraManager::BeginPlay()
 		DepthCamera->SetFarClipDistance(SphereRadius * 2);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
+		DepthCamera->SetHidden(true);
 	}
 }
 

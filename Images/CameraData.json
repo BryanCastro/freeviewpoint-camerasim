@@ -1,0 +1,2050 @@
+{
+	"Camera_0":
+	{
+		"World Position":
+		{
+			"X": 0,
+			"Y": 0,
+			"Z": 800
+		},
+		"World Rotation":
+		{
+			"P": -90,
+			"Y": 180,
+			"R": 180
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_1":
+	{
+		"World Position":
+		{
+			"X": -147.45519161224365,
+			"Y": -135.08107662200928,
+			"Z": 774.60317611694336
+		},
+		"World Rotation":
+		{
+			"P": -75.524350064259906,
+			"Y": 42.492244873710924,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_2":
+	{
+		"World Position":
+		{
+			"X": 24.524217844009399,
+			"Y": 279.44302558898926,
+			"Z": 749.20635223388672
+		},
+		"World Rotation":
+		{
+			"P": -69.473144829751121,
+			"Y": -95.015488595326929,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_3":
+	{
+		"World Position":
+		{
+			"X": 207.315993309021,
+			"Y": -270.40677070617676,
+			"Z": 723.80952835083008
+		},
+		"World Rotation":
+		{
+			"P": -64.791237743558369,
+			"Y": 127.47673147137348,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_4":
+	{
+		"World Position":
+		{
+			"X": -384.18939113616943,
+			"Y": 67.957282066345215,
+			"Z": 698.41270446777344
+		},
+		"World Rotation":
+		{
+			"P": -60.811019558417499,
+			"Y": -10.030996667246701,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_5":
+	{
+		"World Position":
+		{
+			"X": 364.91742134094238,
+			"Y": 232.13100433349609,
+			"Z": 673.0158805847168
+		},
+		"World Rotation":
+		{
+			"P": -57.274463394441796,
+			"Y": -147.53877427088915,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_6":
+	{
+		"World Position":
+		{
+			"X": -121.92747592926025,
+			"Y": -453.56717109680176,
+			"Z": 647.61905670166016
+		},
+		"World Rotation":
+		{
+			"P": -54.049437766558952,
+			"Y": 74.953511913789711,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_7":
+	{
+		"World Position":
+		{
+			"X": -231.75957202911377,
+			"Y": 446.23665809631348,
+			"Z": 622.22223281860352
+		},
+		"World Rotation":
+		{
+			"P": -51.05755100561251,
+			"Y": -62.554227822640847,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_8":
+	{
+		"World Position":
+		{
+			"X": 500.40316581726074,
+			"Y": -182.74532556533813,
+			"Z": 596.82540893554688
+		},
+		"World Rotation":
+		{
+			"P": -48.247808580959699,
+			"Y": 159.93799953727958,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_9":
+	{
+		"World Position":
+		{
+			"X": -517.52500534057617,
+			"Y": -213.6284351348877,
+			"Z": 571.42858505249023
+		},
+		"World Rotation":
+		{
+			"P": -45.584698861014026,
+			"Y": 22.430278316127144,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_10":
+	{
+		"World Position":
+		{
+			"X": 247.81279563903809,
+			"Y": 529.56390380859375,
+			"Z": 546.03176116943359
+		},
+		"World Rotation":
+		{
+			"P": -43.042433075690141,
+			"Y": -115.07754274384619,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_11":
+	{
+		"World Position":
+		{
+			"X": 181.78858757019043,
+			"Y": -579.5621395111084,
+			"Z": 520.63493728637695
+		},
+		"World Rotation":
+		{
+			"P": -40.601464155273284,
+			"Y": 107.41483607734857,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_12":
+	{
+		"World Position":
+		{
+			"X": -543.59817504882812,
+			"Y": 315.0245189666748,
+			"Z": 495.23811340332031
+		},
+		"World Rotation":
+		{
+			"P": -38.246614039501829,
+			"Y": -30.093031721874528,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_13":
+	{
+		"World Position":
+		{
+			"X": 632.39150047302246,
+			"Y": 139.03257846832275,
+			"Z": 469.84128952026367
+		},
+		"World Rotation":
+		{
+			"P": -35.965758388613828,
+			"Y": -167.60066636902178,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_14":
+	{
+		"World Position":
+		{
+			"X": -382.56452083587646,
+			"Y": -544.16284561157227,
+			"Z": 444.44446563720703
+		},
+		"World Rotation":
+		{
+			"P": -33.748999448136829,
+			"Y": 54.891510465669256,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_15":
+	{
+		"World Position":
+		{
+			"X": -87.580192089080811,
+			"Y": 675.8171558380127,
+			"Z": 419.04764175415039
+		},
+		"World Rotation":
+		{
+			"P": -31.588136196828774,
+			"Y": -82.616102658859461,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_16":
+	{
+		"World Position":
+		{
+			"X": 532.54003524780273,
+			"Y": -448.82121086120605,
+			"Z": 393.65077018737793
+		},
+		"World Rotation":
+		{
+			"P": -29.47628993138909,
+			"Y": 139.87603277877182,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_17":
+	{
+		"World Position":
+		{
+			"X": -709.59696769714355,
+			"Y": -29.34606671333313,
+			"Z": 368.25394630432129
+		},
+		"World Rotation":
+		{
+			"P": -27.407592363619099,
+			"Y": 2.3681727074668784,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_18":
+	{
+		"World Position":
+		{
+			"X": 512.34536170959473,
+			"Y": 509.85579490661621,
+			"Z": 342.85712242126465
+		},
+		"World Rotation":
+		{
+			"P": -25.376895647183687,
+			"Y": -135.13954336450442,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_19":
+	{
+		"World Position":
+		{
+			"X": -33.915811777114868,
+			"Y": -733.53171348571777,
+			"Z": 317.46029853820801
+		},
+		"World Rotation":
+		{
+			"P": -23.379864740394865,
+			"Y": 87.352738995479243,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_20":
+	{
+		"World Position":
+		{
+			"X": -477.18768119812012,
+			"Y": 571.82965278625488,
+			"Z": 292.06347465515137
+		},
+		"World Rotation":
+		{
+			"P": -21.412495405964759,
+			"Y": -50.155247933464238,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_21":
+	{
+		"World Position":
+		{
+			"X": 747.51148223876953,
+			"Y": -100.57297945022583,
+			"Z": 266.66665077209473
+		},
+		"World Rotation":
+		{
+			"P": -19.471228243540111,
+			"Y": 172.3372284805987,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_22":
+	{
+		"World Position":
+		{
+			"X": -626.10859870910645,
+			"Y": -435.6358528137207,
+			"Z": 241.26982688903809
+		},
+		"World Rotation":
+		{
+			"P": -17.552939911240905,
+			"Y": 34.829548387904815,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_23":
+	{
+		"World Position":
+		{
+			"X": 169.06687021255493,
+			"Y": 751.54247283935547,
+			"Z": 215.87300300598145
+		},
+		"World Rotation":
+		{
+			"P": -15.654810102813604,
+			"Y": -102.67819304248746,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_24":
+	{
+		"World Position":
+		{
+			"X": 386.30712032318115,
+			"Y": -674.15423393249512,
+			"Z": 190.4761791229248
+		},
+		"World Rotation":
+		{
+			"P": -13.774164846647404,
+			"Y": 119.81378013389946,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_25":
+	{
+		"World Position":
+		{
+			"X": -745.75238227844238,
+			"Y": 237.90996074676514,
+			"Z": 165.07935523986816
+		},
+		"World Rotation":
+		{
+			"P": -11.908500824094851,
+			"Y": -17.693725436524904,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_26":
+	{
+		"World Position":
+		{
+			"X": 715.07511138916016,
+			"Y": 330.39040565490723,
+			"Z": 139.68253135681152
+		},
+		"World Rotation":
+		{
+			"P": -10.055554083548712,
+			"Y": -155.20136565105921,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_27":
+	{
+		"World Position":
+		{
+			"X": -305.6804895401001,
+			"Y": -730.41057586669922,
+			"Z": 114.28570747375488
+		},
+		"World Rotation":
+		{
+			"P": -8.2132012026359007,
+			"Y": 67.290445328539732,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_28":
+	{
+		"World Position":
+		{
+			"X": -269.08769607543945,
+			"Y": 748.12383651733398,
+			"Z": 88.888883590698242
+		},
+		"World Rotation":
+		{
+			"P": -6.3793763497504319,
+			"Y": -70.217185880034975,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_29":
+	{
+		"World Position":
+		{
+			"X": 705.91983795166016,
+			"Y": -371.00434303283691,
+			"Z": 63.492059707641602
+		},
+		"World Rotation":
+		{
+			"P": -4.5520772725748202,
+			"Y": 152.27530932951447,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_30":
+	{
+		"World Position":
+		{
+			"X": -772.69678115844727,
+			"Y": -203.68952751159668,
+			"Z": 38.095235824584961
+		},
+		"World Rotation":
+		{
+			"P": -2.7294003694122448,
+			"Y": 14.767711907891222,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_31":
+	{
+		"World Position":
+		{
+			"X": 432.61375427246094,
+			"Y": 672.81937599182129,
+			"Z": 12.69841194152832
+		},
+		"World Rotation":
+		{
+			"P": -0.90949366253408903,
+			"Y": -122.74046899447181,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_32":
+	{
+		"World Position":
+		{
+			"X": 135.48803329467773,
+			"Y": -788.34071159362793,
+			"Z": -12.698459625244141
+		},
+		"World Rotation":
+		{
+			"P": 0.9094988454427162,
+			"Y": 99.751858320819252,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_33":
+	{
+		"World Position":
+		{
+			"X": -631.7847728729248,
+			"Y": 489.28465843200684,
+			"Z": -38.095283508300781
+		},
+		"World Rotation":
+		{
+			"P": 2.7294000739943907,
+			"Y": -37.755931300128765,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_34":
+	{
+		"World Position":
+		{
+			"X": 794.75293159484863,
+			"Y": 65.848201513290405,
+			"Z": -63.492107391357422
+		},
+		"World Rotation":
+		{
+			"P": 4.5520765152222511,
+			"Y": -175.26365222537765,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_35":
+	{
+		"World Position":
+		{
+			"X": -539.89224433898926,
+			"Y": -583.61992835998535,
+			"Z": -88.888931274414062
+		},
+		"World Rotation":
+		{
+			"P": 6.3793877844463358,
+			"Y": 47.22885686484009,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_36":
+	{
+		"World Position":
+		{
+			"X": 3.8507841527462006,
+			"Y": 791.78524017333984,
+			"Z": -114.2857551574707
+		},
+		"World Rotation":
+		{
+			"P": 8.2132141184925072,
+			"Y": -90.278651241599178,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_37":
+	{
+		"World Position":
+		{
+			"X": 529.26144599914551,
+			"Y": -583.41565132141113,
+			"Z": -139.68257904052734
+		},
+		"World Rotation":
+		{
+			"P": 10.055547402409962,
+			"Y": 132.21360228601165,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_38":
+	{
+		"World Position":
+		{
+			"X": -779.44378852844238,
+			"Y": 72.226631641387939,
+			"Z": -165.07940292358398
+		},
+		"World Rotation":
+		{
+			"P": 11.90848962175909,
+			"Y": -5.2941561404838335,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_39":
+	{
+		"World Position":
+		{
+			"X": 618.9110279083252,
+			"Y": 469.75021362304688,
+			"Z": -190.47622680664062
+		},
+		"World Rotation":
+		{
+			"P": 13.774179122334091,
+			"Y": -142.80169311961677,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_40":
+	{
+		"World Position":
+		{
+			"X": -137.86828517913818,
+			"Y": -757.88531303405762,
+			"Z": -215.87305068969727
+		},
+		"World Rotation":
+		{
+			"P": 15.654837015610179,
+			"Y": 79.689961065609623,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_41":
+	{
+		"World Position":
+		{
+			"X": -406.25295639038086,
+			"Y": 645.56159973144531,
+			"Z": -241.26987457275391
+		},
+		"World Rotation":
+		{
+			"P": 17.552933680974906,
+			"Y": -57.817726580261443,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_42":
+	{
+		"World Position":
+		{
+			"X": 727.42681503295898,
+			"Y": -199.34972524642944,
+			"Z": -266.66669845581055
+		},
+		"World Rotation":
+		{
+			"P": 19.47120386443655,
+			"Y": 164.67448182829008,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_43":
+	{
+		"World Position":
+		{
+			"X": -662.61591911315918,
+			"Y": -340.05444049835205,
+			"Z": -292.06352233886719
+		},
+		"World Rotation":
+		{
+			"P": 21.412504836628607,
+			"Y": 27.166891255512372,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_44":
+	{
+		"World Position":
+		{
+			"X": 255.24733066558838,
+			"Y": 688.5246753692627,
+			"Z": -317.46034622192383
+		},
+		"World Rotation":
+		{
+			"P": 23.379899390843619,
+			"Y": -110.34056507609206,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_45":
+	{
+		"World Position":
+		{
+			"X": 272.5430965423584,
+			"Y": -669.45562362670898,
+			"Z": -342.85717010498047
+		},
+		"World Rotation":
+		{
+			"P": 25.376901488451473,
+			"Y": 112.15180454554462,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_46":
+	{
+		"World Position":
+		{
+			"X": -641.78676605224609,
+			"Y": 304.13892269134521,
+			"Z": -368.25399398803711
+		},
+		"World Rotation":
+		{
+			"P": 27.407556189429059,
+			"Y": -25.355994248043842,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_47":
+	{
+		"World Position":
+		{
+			"X": 665.53182601928711,
+			"Y": 205.19554615020752,
+			"Z": -393.65081787109375
+		},
+		"World Rotation":
+		{
+			"P": 29.476331990683125,
+			"Y": -162.86451953978508,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_48":
+	{
+		"World Position":
+		{
+			"X": -344.557785987854,
+			"Y": -587.94312477111816,
+			"Z": -419.04764175415039
+		},
+		"World Rotation":
+		{
+			"P": 31.588189384465103,
+			"Y": 59.628020574845607,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_49":
+	{
+		"World Position":
+		{
+			"X": -139.6670937538147,
+			"Y": 650.35600662231445,
+			"Z": -444.44446563720703
+		},
+		"World Rotation":
+		{
+			"P": 33.748969023224937,
+			"Y": -77.87954705954597,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_50":
+	{
+		"World Position":
+		{
+			"X": 527.87480354309082,
+			"Y": -374.96547698974609,
+			"Z": -469.84128952026367
+		},
+		"World Rotation":
+		{
+			"P": 35.965698318496841,
+			"Y": 144.61266729827136,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_51":
+	{
+		"World Position":
+		{
+			"X": -623.45795631408691,
+			"Y": -77.710592746734619,
+			"Z": -495.23811340332031
+		},
+		"World Rotation":
+		{
+			"P": 38.246637465993359,
+			"Y": 7.1049590562247236,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_52":
+	{
+		"World Position":
+		{
+			"X": 393.68991851806641,
+			"Y": 462.54286766052246,
+			"Z": -520.63493728637695
+		},
+		"World Rotation":
+		{
+			"P": 40.601529678622548,
+			"Y": -130.40252015703788,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_53":
+	{
+		"World Position":
+		{
+			"X": 21.322400867938995,
+			"Y": -584.28993225097656,
+			"Z": -546.03176116943359
+		},
+		"World Rotation":
+		{
+			"P": 43.04242221474,
+			"Y": 92.089958473958475,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_54":
+	{
+		"World Position":
+		{
+			"X": -392.99478530883789,
+			"Y": 398.78048896789551,
+			"Z": -571.42858505249023
+		},
+		"World Rotation":
+		{
+			"P": 45.584628496083276,
+			"Y": -45.418667407211366,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_55":
+	{
+		"World Position":
+		{
+			"X": 532.03368186950684,
+			"Y": -27.197650074958801,
+			"Z": -596.82540893554688
+		},
+		"World Rotation":
+		{
+			"P": 48.247790104536669,
+			"Y": 177.07357765117834,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_56":
+	{
+		"World Position":
+		{
+			"X": -387.62729167938232,
+			"Y": -320.28656005859375,
+			"Z": -622.22223281860352
+		},
+		"World Rotation":
+		{
+			"P": 51.057620601039105,
+			"Y": 39.566055463612088,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_57":
+	{
+		"World Position":
+		{
+			"X": 64.889818429946899,
+			"Y": 465.16513824462891,
+			"Z": -647.61905670166016
+		},
+		"World Rotation":
+		{
+			"P": 54.049449722682034,
+			"Y": -97.941424489556056,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_58":
+	{
+		"World Position":
+		{
+			"X": 245.28326988220215,
+			"Y": -356.21135234832764,
+			"Z": -673.0158805847168
+		},
+		"World Rotation":
+		{
+			"P": 57.27440192610603,
+			"Y": 124.55087610240784,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_59":
+	{
+		"World Position":
+		{
+			"X": -380.22010326385498,
+			"Y": 87.479615211486816,
+			"Z": -698.41270446777344
+		},
+		"World Rotation":
+		{
+			"P": 60.810993151457431,
+			"Y": -12.956913703119067,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_60":
+	{
+		"World Position":
+		{
+			"X": 296.45533561706543,
+			"Y": 167.96897649765015,
+			"Z": -723.80952835083008
+		},
+		"World Rotation":
+		{
+			"P": 64.791275744565183,
+			"Y": -150.4644919388432,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_61":
+	{
+		"World Position":
+		{
+			"X": -86.557883024215698,
+			"Y": -266.82834625244141,
+			"Z": -749.20635223388672
+		},
+		"World Rotation":
+		{
+			"P": 69.473169736368533,
+			"Y": 72.02717657451096,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_62":
+	{
+		"World Position":
+		{
+			"X": -82.990378141403198,
+			"Y": 181.94136619567871,
+			"Z": -774.60317611694336
+		},
+		"World Rotation":
+		{
+			"P": 75.524327038061344,
+			"Y": -65.480466919475688,
+			"R": 0
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	},
+	"Camera_63":
+	{
+		"World Position":
+		{
+			"X": 0,
+			"Y": 0,
+			"Z": -800
+		},
+		"World Rotation":
+		{
+			"P": 90,
+			"Y": 0,
+			"R": 180
+		},
+		"Filmback":
+		{
+			"SensorWidth": 23.760000228881836,
+			"SensorHeight": 13.364999771118164,
+			"SensorAspectRatio": 1.7777777910232544
+		},
+		"Lens":
+		{
+			"MinFocalLength": 4,
+			"MaxFocalLength": 1000
+		},
+		"Other":
+		{
+			"Distance from Scene(cm)": 800,
+			"Near Clip Plane": 0.10000000149011612,
+			"Far Clip Plane": 1600
+		}
+	}
+}
