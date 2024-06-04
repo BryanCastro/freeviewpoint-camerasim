@@ -13,7 +13,7 @@ UENUM(BlueprintType)
 enum class CameraSetupEnum : uint8
 {
 	SPHERE UMETA(DisplayName = "Sphere"),
-	CUBE   UMETA(DisplayName = "Cube"),
+	CIRCLE   UMETA(DisplayName = "CIRCLE"),
 };
 
 UCLASS()
@@ -40,6 +40,7 @@ protected:
 	float SphereRadius = 1000.0f;
 
 	void SpawnCamerasInSphere();
+	void SpawnCamerasInCircle(FString axis);
 	void ClearSpawnedCameras();
 	void SpawnCameras();
 

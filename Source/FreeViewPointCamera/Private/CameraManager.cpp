@@ -82,8 +82,10 @@ void ACameraManager::SpawnCameras() {
 		case CameraSetupEnum::SPHERE:
 			SpawnCamerasInSphere();
 			break;
+		case CameraSetupEnum::CIRCLE:
+			SpawnCamerasInCircle("Y");
+			break;
 		default:
-			SpawnCamerasInSphere();
 			break;
 	}
 
@@ -113,6 +115,39 @@ void ACameraManager::SpawnCamerasInSphere() {
 			DepthCameras.Add(NewCamera);
 		}
 	}
+}
+
+void ACameraManager::SpawnCamerasInCircle(FString axis) {
+    for (int32 i = 0; i < NumOfCameras; i++)
+    {
+        float theta = 2 * PI * i / NumOfCameras; // angle for each camera
+
+        // Calculate x, y, and z coordinates based on the specified axis.
+        float x = 0, y = 0, z = 0;
+        if (axis == "X") {
+            y = cos(theta);
+            z = sin(theta);
+        } else if (axis == "Y") {
+            x = cos(theta);
+            z = sin(theta);
+        } else if (axis == "Z") {
+            x = cos(theta);
+            y = sin(theta);
+        }
+
+        FVector SpawnLocation = FVector(x, y, z) * SphereRadius;
+        FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = GetInstigator();
+
+        AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, SpawnLocation, SpawnRotation, SpawnParams);
+        if(NewCamera){
+            Cast<ADepthCameraActor>(NewCamera)->SetCameraName(i);
+            DepthCameras.Add(NewCamera);
+        }
+    }
 }
 
 void ACameraManager::ClearSpawnedCameras() {
@@ -160,7 +195,6 @@ void ACameraManager::RenderImages() {
 		RotationObject->SetNumberField("Y", Rotation.Yaw);
 		RotationObject->SetNumberField("R", Rotation.Roll);
 
-		
 		// Get the Filmback settings.
 		FCameraFilmbackSettings FilmbackSettings = DepthCamera->Camera->Filmback;
 		float SensorWidth = FilmbackSettings.SensorWidth;
