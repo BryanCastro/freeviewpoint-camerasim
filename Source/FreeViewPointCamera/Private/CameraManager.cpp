@@ -64,13 +64,18 @@ void ACameraManager::BeginPlay()
 	// Get all ADepthCameraActor in World and store in TArray called DepthCameras
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADepthCameraActor::StaticClass(), DepthCameras);
 	SpawnCameras();
+	int32 CameraName=0;
 	for (auto Camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
 		DepthCamera->SetFarClipDistance(SphereRadius * 2);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
 		DepthCamera->SetHidden(true);
+		DepthCamera->SetCameraName(CameraName);
+		CameraName++;
 	}
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Num of Cameras: %d"), DepthCameras.Num()));
 }
 
 void ACameraManager::SpawnCameras() {
@@ -82,8 +87,26 @@ void ACameraManager::SpawnCameras() {
 		case CameraSetupEnum::SPHERE:
 			SpawnCamerasInSphere();
 			break;
-		case CameraSetupEnum::CIRCLE:
+		case CameraSetupEnum::CIRCLE_X:
+			SpawnCamerasInCircle("X");	
+			break;
+		case CameraSetupEnum::CIRCLE_Y:
 			SpawnCamerasInCircle("Y");
+			break;
+		case CameraSetupEnum::CIRCLE_Z:
+			SpawnCamerasInCircle("Z");
+			break;
+		case CameraSetupEnum::CIRCLE_XY:
+			SpawnCamerasInCircle("X");
+			SpawnCamerasInCircle("Y");
+			break;
+		case CameraSetupEnum::CIRCLE_XZ:
+			SpawnCamerasInCircle("X");
+			SpawnCamerasInCircle("Z");
+			break;
+		case CameraSetupEnum::CIRCLE_YZ:
+			SpawnCamerasInCircle("Y");
+			SpawnCamerasInCircle("Z");
 			break;
 		default:
 			break;
@@ -118,7 +141,7 @@ void ACameraManager::SpawnCamerasInSphere() {
 }
 
 void ACameraManager::SpawnCamerasInCircle(FString axis) {
-    for (int32 i = 0; i < NumOfCameras; i++)
+     for (int32 i = 0; i < NumOfCameras; i++)
     {
         float theta = 2 * PI * i / NumOfCameras; // angle for each camera
 
@@ -150,6 +173,7 @@ void ACameraManager::SpawnCamerasInCircle(FString axis) {
     }
 }
 
+
 void ACameraManager::ClearSpawnedCameras() {
 	for (AActor* Camera : DepthCameras) {
 		if (Camera) {
@@ -170,7 +194,9 @@ void ACameraManager::RenderImages() {
     // Create a new JSON object.
     TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
-  
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Rendering Images for Num of Cameras: %d"), DepthCameras.Num()));
+
 	for (auto camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
 		DepthCamera->RenderImages();
@@ -238,6 +264,9 @@ void ACameraManager::RenderImages() {
 		// Add the camera object to the main JSON object.
 		JsonObject->SetObjectField(DepthCamera->GetCameraName(), CameraObject);
 		
+		FString CameraName = DepthCamera->GetCameraName();
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Camera Name: %s"), *CameraName));
 	}
     // Convert the JSON object to a string.
     FString JsonString;

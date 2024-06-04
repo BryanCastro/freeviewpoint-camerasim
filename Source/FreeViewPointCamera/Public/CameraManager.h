@@ -13,7 +13,13 @@ UENUM(BlueprintType)
 enum class CameraSetupEnum : uint8
 {
 	SPHERE UMETA(DisplayName = "Sphere"),
-	CIRCLE   UMETA(DisplayName = "CIRCLE"),
+	CIRCLE_X   UMETA(DisplayName = "CIRCLE_PLANE_X"),
+	CIRCLE_Y   UMETA(DisplayName = "CIRCLE_PLANE_Y"),
+	CIRCLE_Z   UMETA(DisplayName = "CIRCLE_PLANE_Z"),
+	CIRCLE_XY   UMETA(DisplayName = "CIRCLE_PLANE_XY"),
+	CIRCLE_XZ  UMETA(DisplayName = "CIRCLE_PLANE_XZ"),
+	CIRCLE_YZ  UMETA(DisplayName = "CIRCLE_PLANE_YZ"),
+
 };
 
 UCLASS()
@@ -55,8 +61,6 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void RenderImages();
-
-
 
 public:	
 	// Called every frame
