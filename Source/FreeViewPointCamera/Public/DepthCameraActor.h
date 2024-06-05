@@ -50,6 +50,8 @@ public:
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
 	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
 	void SetFarClipDistance(float FarClipDistance);
+	void SetDistanceFromLookTarget(float Distance);
+	float GetDistanceFromLookTarget();
 	FString GetCameraName();
 	void SetCameraName(int index);
 
@@ -72,5 +74,6 @@ private:
 	float TimeAccumulator;
 	float FarClip;
 	float NearClip = 0.1f;
+	float DistanceFromLookTarget = 0.0f;
 
 };

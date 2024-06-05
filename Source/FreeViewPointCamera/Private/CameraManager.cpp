@@ -41,6 +41,12 @@ void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, SphereRadius)) {
 		SpawnCameras();
 	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, CurrentState)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, NumOfCamerasInScene)) {
+		SpawnCameras();
+	}
 }
 
 #endif
@@ -64,15 +70,13 @@ void ACameraManager::BeginPlay()
 	// Get all ADepthCameraActor in World and store in TArray called DepthCameras
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADepthCameraActor::StaticClass(), DepthCameras);
 	SpawnCameras();
-	int32 CameraName=0;
 	for (auto Camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
-		DepthCamera->SetFarClipDistance(SphereRadius * 2);
+		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 2);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
 		DepthCamera->SetHidden(true);
-		DepthCamera->SetCameraName(CameraName);
-		CameraName++;
+		//DepthCamera->SetCameraName(CameraName);
 	}
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Num of Cameras: %d"), DepthCameras.Num()));
@@ -108,6 +112,9 @@ void ACameraManager::SpawnCameras() {
 			SpawnCamerasInCircle("Y");
 			SpawnCamerasInCircle("Z");
 			break;
+		case CameraSetupEnum::SEMI_SPHERE:
+			SpawnCamerasInHemisphere();
+			break;
 		default:
 			break;
 	}
@@ -131,13 +138,47 @@ void ACameraManager::SpawnCamerasInSphere() {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = GetInstigator();
-
-		AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, SpawnLocation, SpawnRotation, SpawnParams);
-		if(NewCamera){
-			Cast<ADepthCameraActor>(NewCamera)->SetCameraName(i);
-			DepthCameras.Add(NewCamera);
-		}
+		
+		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);	
 	}
+}
+
+void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams) {
+	float NewDistance = FMath::FRandRange(SphereRadius, SphereRadius * 10);
+	if (bRandomRadius)
+		SpawnLocation = (SpawnLocation / SphereRadius) * NewDistance;
+	
+	AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, SpawnLocation, SpawnRotation, SpawnParams);
+	if (NewCamera) {
+		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(NewCamera);
+		DepthCamera->SetCameraName(NumOfCamerasInScene);
+		DepthCamera->SetDistanceFromLookTarget(NewDistance);
+		DepthCameras.Add(NewCamera);
+		NumOfCamerasInScene++;
+	}
+}
+
+void ACameraManager::SpawnCamerasInHemisphere() {
+    const float Phi = (1 + sqrt(5)) / 2; // Golden ratio
+    for (int32 i = 0; i < NumOfCameras; i++)
+    {
+        float theta = 2 * PI * i / Phi;
+        float z = 1 - (i / (NumOfCameras - 1.0f)); // z goes from 1 to 0
+        float radius = sqrt(1 - z * z); // radius at z
+
+        float x = cos(theta) * radius;
+        float y = sin(theta) * radius;
+
+        FVector SpawnLocation = FVector(x, y, z) * SphereRadius;
+        FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = this;
+        SpawnParams.Instigator = GetInstigator();
+
+		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
+
+    }
 }
 
 void ACameraManager::SpawnCamerasInCircle(FString axis) {
@@ -165,11 +206,7 @@ void ACameraManager::SpawnCamerasInCircle(FString axis) {
         SpawnParams.Owner = this;
         SpawnParams.Instigator = GetInstigator();
 
-        AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, SpawnLocation, SpawnRotation, SpawnParams);
-        if(NewCamera){
-            Cast<ADepthCameraActor>(NewCamera)->SetCameraName(i);
-            DepthCameras.Add(NewCamera);
-        }
+		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
     }
 }
 
@@ -181,6 +218,7 @@ void ACameraManager::ClearSpawnedCameras() {
 		}
 	}
 	DepthCameras.Empty();
+	NumOfCamerasInScene = 0;
 }
 
 

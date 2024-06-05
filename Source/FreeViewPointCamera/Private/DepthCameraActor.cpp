@@ -249,4 +249,10 @@ void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTar
 	
 }
 	
+void ADepthCameraActor::SetDistanceFromLookTarget(float Distance){
+	DistanceFromLookTarget = Distance;
+}
 
+float ADepthCameraActor::GetDistanceFromLookTarget(){
+	return DistanceFromLookTarget;
+}

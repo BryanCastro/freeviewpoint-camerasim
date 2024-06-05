@@ -19,6 +19,7 @@ enum class CameraSetupEnum : uint8
 	CIRCLE_XY   UMETA(DisplayName = "CIRCLE_PLANE_XY"),
 	CIRCLE_XZ  UMETA(DisplayName = "CIRCLE_PLANE_XZ"),
 	CIRCLE_YZ  UMETA(DisplayName = "CIRCLE_PLANE_YZ"),
+	SEMI_SPHERE UMETA(DisplayName = "SEMI_SPHERE"),
 
 };
 
@@ -44,11 +45,15 @@ protected:
 	int NumOfCameras = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
 	float SphereRadius = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+	bool bRandomRadius = false;
 
 	void SpawnCamerasInSphere();
+	void SpawnCamerasInHemisphere();
 	void SpawnCamerasInCircle(FString axis);
 	void ClearSpawnedCameras();
 	void SpawnCameras();
+	void AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams);
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	TSubclassOf<AActor> CameraActorClassRef;
@@ -61,6 +66,8 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void RenderImages();
+
+	int32 NumOfCamerasInScene = 0;
 
 public:	
 	// Called every frame
