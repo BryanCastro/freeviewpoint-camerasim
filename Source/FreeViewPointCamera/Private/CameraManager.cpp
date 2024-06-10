@@ -14,6 +14,8 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "CineCameraComponent.h"
+#include "Engine/StaticMeshActor.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 // Sets default values
 ACameraManager::ACameraManager()
@@ -72,9 +74,13 @@ void ACameraManager::BeginPlay()
 	SpawnCameras();
 	for (auto Camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
-		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 2);
+		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 3);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
+		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 2);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
+		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 3);
+		DepthCamera->SetFarClipPlane(DepthCamera->SceneMaskCapture);
+
 		DepthCamera->SetHidden(true);
 		//DepthCamera->SetCameraName(CameraName);
 	}
@@ -86,6 +92,12 @@ void ACameraManager::SpawnCameras() {
 	if (!CameraActorClassRef) return;
 
 	ClearSpawnedCameras();
+
+	if(!ActorToIngore) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No ActorToIgnore Set! Cameras will not spawn")));
+		return;
+	}
 
 	switch (CurrentState) {
 		case CameraSetupEnum::SPHERE:
@@ -122,24 +134,28 @@ void ACameraManager::SpawnCameras() {
 }
 
 void ACameraManager::SpawnCamerasInSphere() {
-	const float Phi = (1 + sqrt(5)) / 2; // Golden ratio
+	float radius, theta;
+	FVector SpawnLocation;
+	FRotator SpawnRotation;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+
 	for (int32 i = 0; i < NumOfCameras; i++)
 	{
-		float theta = 2 * PI * i / Phi;
-		float z = 1 - (i / (NumOfCameras - 1.0f)) * 2; // z goes from 1 to -1
-		float radius = sqrt(1 - z * z); // radius at z
+		float phi = (sqrt(5.0) - 1.0) / 2.0; // golden ratio
+		float y = 1 - (i / float(NumOfCameras - 1)) * 2; // y goes from 1 to -1
+		radius = sqrt(1 - y * y); // radius at y
+
+		theta = 2 * PI * phi * i;
 
 		float x = cos(theta) * radius;
-		float y = sin(theta) * radius;
+		float z = sin(theta) * radius;
 
-		FVector SpawnLocation = FVector(x, y, z) * SphereRadius;
-		FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
+		SpawnLocation = FVector(x, y, z) * SphereRadius;
+		SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
-		
-		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);	
+		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
 	}
 }
 
@@ -152,19 +168,27 @@ void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotati
 	if (NewCamera) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(NewCamera);
 		DepthCamera->SetCameraName(NumOfCamerasInScene);
-		DepthCamera->SetDistanceFromLookTarget(NewDistance);
+		if(bRandomRadius)
+			DepthCamera->SetDistanceFromLookTarget(NewDistance);
+		else
+			DepthCamera->SetDistanceFromLookTarget(SphereRadius);
+
+		DepthCamera->Camera->CurrentAperture = 22.0f;
+		DepthCamera->SceneRGBDCapture->HiddenActors.Add(ActorToIngore);
 		DepthCameras.Add(NewCamera);
+	
 		NumOfCamerasInScene++;
 	}
 }
 
 void ACameraManager::SpawnCamerasInHemisphere() {
-    const float Phi = (1 + sqrt(5)) / 2; // Golden ratio
+ 
+   const float Phi = (1 + sqrt(5)) / 2; // Golden ratio
     for (int32 i = 0; i < NumOfCameras; i++)
     {
         float theta = 2 * PI * i / Phi;
         float z = 1 - (i / (NumOfCameras - 1.0f)); // z goes from 1 to 0
-        float radius = sqrt(1 - z * z); // radius at z
+        float radius = sqrt(i) / sqrt(NumOfCameras); // radius increases as i increases
 
         float x = cos(theta) * radius;
         float y = sin(theta) * radius;
@@ -176,8 +200,7 @@ void ACameraManager::SpawnCamerasInHemisphere() {
         SpawnParams.Owner = this;
         SpawnParams.Instigator = GetInstigator();
 
-		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
-
+        AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
     }
 }
 

@@ -8,6 +8,7 @@
 
 class ADepthCameraActor;
 class UMaterialInstance;
+class AStaticMeshActor;
 
 UENUM(BlueprintType)
 enum class CameraSetupEnum : uint8
@@ -32,6 +33,8 @@ class FREEVIEWPOINTCAMERA_API ACameraManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACameraManager();
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -66,6 +69,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void RenderImages();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings")
+	AStaticMeshActor* ActorToIngore;
 
 	int32 NumOfCamerasInScene = 0;
 

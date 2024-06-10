@@ -27,9 +27,12 @@ ADepthCameraActor::ADepthCameraActor()
 	SceneRGBDCapture->SetupAttachment(Camera);
 	SceneRGBCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneRGBCapture"));
 	SceneRGBCapture->SetupAttachment(Camera);
+	SceneMaskCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneMaskCapture"));
+	SceneMaskCapture->SetupAttachment(Camera);
 
-	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget "));
-	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget "));
+	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget"));
+	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget"));
+	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderMaskTarget"));
 
     // Initialize DepthMaterialInstance
 	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialInstance(TEXT("MaterialInstanceConstant'/Game/Materials/MI_PostProcessDepth.MI_PostProcessDepth'"));
@@ -40,6 +43,7 @@ ADepthCameraActor::ADepthCameraActor()
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("DepthCameraActor.cpp: Failed to Load MI_PostProcessDepth in Constructor!")));
 	}
 
+
 }
 
 // Called when the game starts or when spawned
@@ -48,19 +52,20 @@ void ADepthCameraActor::BeginPlay()
 	Super::BeginPlay();
 	
 	RenderRGBDTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderRGBDTarget->ClearColor = FLinearColor::Black;
 	RenderRGBDTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
 	RenderRGBDTarget->UpdateResourceImmediate(true);
 
 
 	RenderRGBTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderRGBTarget->ClearColor = FLinearColor::Black;
 	RenderRGBTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
 	RenderRGBTarget->UpdateResourceImmediate(true); 
 
-
+	RenderMaskTarget->InitAutoFormat(ResolutionX, ResolutionY);
+	RenderMaskTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
+	RenderMaskTarget->UpdateResourceImmediate(true);
 
 	SceneRGBDCapture->TextureTarget = RenderRGBDTarget;
+	SceneRGBDCapture->TextureTarget->ClearColor = FLinearColor::Black;
 	SceneRGBDCapture->CaptureSource = ESceneCaptureSource::SCS_SceneDepth;
 	SceneRGBDCapture->bCaptureEveryFrame = false;
 	SceneRGBDCapture->bCaptureOnMovement = false;
@@ -72,6 +77,7 @@ void ADepthCameraActor::BeginPlay()
 	//SceneRGBDCapture->PostProcessSettings.AddBlendable(DepthMaterialInstance, 1);
 
 	SceneRGBCapture->TextureTarget = RenderRGBTarget;
+	SceneRGBCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneRGBCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
 	SceneRGBCapture->bCaptureEveryFrame = false;
 	SceneRGBCapture->bCaptureOnMovement = false;
@@ -81,6 +87,10 @@ void ADepthCameraActor::BeginPlay()
 	SceneRGBCapture->ShowFlags.SetDynamicShadows(true);
 	SceneRGBCapture->ShowFlags.SetGlobalIllumination(true);
 
+	SceneMaskCapture->TextureTarget = RenderMaskTarget;
+	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
+	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+	
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(0, 20.0f, FColor::Green, FString::Printf(TEXT("In Constructor!")));
 
@@ -152,11 +162,12 @@ void ADepthCameraActor::RenderImages(){
 		// Capture the scene to update the render target
 		SceneRGBDCapture->CaptureScene();
 		SceneRGBCapture->CaptureScene();
+		SceneMaskCapture->CaptureScene();
 		FString Name = GetCameraName();
 		// Call the function to save the render targets
 		SaveRenderTargetToDisk(RenderRGBDTarget, Name + FString("_RGBD"), true);
 		SaveRenderTargetToDisk(RenderRGBTarget, Name + FString("_RGB"));
-
+		SaveRenderTargetToDisk(RenderMaskTarget, Name + FString("_Mask"));
 		// Reset the time accumulator
 		TimeAccumulator -= (1.0f / 24.0f);
 

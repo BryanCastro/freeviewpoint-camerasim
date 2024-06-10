@@ -26,11 +26,15 @@ public:
 	USceneCaptureComponent2D* SceneRGBDCapture;
 	UPROPERTY(VisibleAnywhere)
 	USceneCaptureComponent2D* SceneRGBCapture;
+	UPROPERTY(VisibleAnywhere)
+	USceneCaptureComponent2D* SceneMaskCapture;
 	
 	UPROPERTY()
 	UTextureRenderTarget2D* RenderRGBDTarget;
 	UPROPERTY()
 	UTextureRenderTarget2D* RenderRGBTarget;
+	UPROPERTY()
+		UTextureRenderTarget2D* RenderMaskTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	int ResolutionX=256;
