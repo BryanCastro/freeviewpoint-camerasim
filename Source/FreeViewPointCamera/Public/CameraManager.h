@@ -9,6 +9,7 @@
 class ADepthCameraActor;
 class UMaterialInstance;
 class AStaticMeshActor;
+class ACharacter;
 
 UENUM(BlueprintType)
 enum class CameraSetupEnum : uint8
@@ -72,6 +73,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings")
 	AStaticMeshActor* ActorToIngore;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
+	AActor* CharacterToMask;
 
 	int32 NumOfCamerasInScene = 0;
 

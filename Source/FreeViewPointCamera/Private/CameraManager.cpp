@@ -17,6 +17,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/SceneCaptureComponent2D.h"
 
+
 // Sets default values
 ACameraManager::ACameraManager()
 {
@@ -98,6 +99,11 @@ void ACameraManager::SpawnCameras() {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No ActorToIgnore Set! Cameras will not spawn")));
 		return;
 	}
+	if(!CharacterToMask) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No CharacterToCapture Set! Cameras will not spawn")));
+		return;
+	}
 
 	switch (CurrentState) {
 		case CameraSetupEnum::SPHERE:
@@ -175,6 +181,7 @@ void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotati
 
 		DepthCamera->Camera->CurrentAperture = 22.0f;
 		DepthCamera->SceneRGBDCapture->HiddenActors.Add(ActorToIngore);
+		DepthCamera->SceneMaskCapture->ShowOnlyActors.Add(CharacterToMask);
 		DepthCameras.Add(NewCamera);
 	
 		NumOfCamerasInScene++;
@@ -260,7 +267,7 @@ void ACameraManager::RenderImages() {
 
 	for (auto camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
-		DepthCamera->RenderImages();
+		DepthCamera->RenderImages(true, CharacterToMask);
 
 		// Get the camera's world position and rotation.
 		FVector Position = camera->GetActorLocation();

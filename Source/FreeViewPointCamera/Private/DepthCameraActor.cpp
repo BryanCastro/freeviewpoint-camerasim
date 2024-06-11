@@ -13,6 +13,9 @@
 #include "Misc/Paths.h"
 #include "TimerManager.h"
 #include "HAL/PlatformFilemanager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/Light.h"
+
 
 // Sets default values
 ADepthCameraActor::ADepthCameraActor()
@@ -90,6 +93,8 @@ void ADepthCameraActor::BeginPlay()
 	SceneMaskCapture->TextureTarget = RenderMaskTarget;
 	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+
+
 	
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(0, 20.0f, FColor::Green, FString::Printf(TEXT("In Constructor!")));
@@ -151,7 +156,7 @@ FString ADepthCameraActor::GetCameraName() {
 	return CameraName;
 }
 
-void ADepthCameraActor::RenderImages(){
+void ADepthCameraActor::RenderImages(bool bCaptureMask, AActor* CharacterToMask){
 	// Update the time accumulator
 	//TimeAccumulator += DeltaTime;
 
@@ -162,7 +167,35 @@ void ADepthCameraActor::RenderImages(){
 		// Capture the scene to update the render target
 		SceneRGBDCapture->CaptureScene();
 		SceneRGBCapture->CaptureScene();
-		SceneMaskCapture->CaptureScene();
+
+		// Get all actors in the world
+		TArray<AActor*> AllActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActors);
+
+		if (bCaptureMask) {
+			//Hide all actors Besides the character
+			for (AActor* Actor : AllActors) {
+        		if (Actor != CharacterToMask)
+				{
+					Actor->SetActorHiddenInGame(true);
+				}
+			}
+			
+			CharacterToMask->SetActorHiddenInGame(false);
+			SceneMaskCapture->CaptureScene();
+			CharacterToMask->SetActorHiddenInGame(true);
+
+			// Show all actors again
+			for (AActor* Actor : AllActors)
+			{
+        		if (Actor != CharacterToMask)
+				{
+					Actor->SetActorHiddenInGame(false);
+				}
+			}
+		}
+	
+
 		FString Name = GetCameraName();
 		// Call the function to save the render targets
 		SaveRenderTargetToDisk(RenderRGBDTarget, Name + FString("_RGBD"), true);

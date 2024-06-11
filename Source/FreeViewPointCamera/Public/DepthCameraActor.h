@@ -34,7 +34,7 @@ public:
 	UPROPERTY()
 	UTextureRenderTarget2D* RenderRGBTarget;
 	UPROPERTY()
-		UTextureRenderTarget2D* RenderMaskTarget;
+	UTextureRenderTarget2D* RenderMaskTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	int ResolutionX=256;
@@ -50,7 +50,7 @@ public:
 	UFUNCTION()
 	const FRotator GetRotation();
 
-	void RenderImages();
+	void RenderImages(bool bCaptureMask, AActor* CharacterToMask);
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
 	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
 	void SetFarClipDistance(float FarClipDistance);
