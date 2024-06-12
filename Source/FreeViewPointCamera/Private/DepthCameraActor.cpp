@@ -93,6 +93,8 @@ void ADepthCameraActor::BeginPlay()
 	SceneMaskCapture->TextureTarget = RenderMaskTarget;
 	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+	SceneMaskCapture->bCaptureEveryFrame = false;
+	SceneMaskCapture->bCaptureOnMovement = false;
 
 
 	
@@ -125,8 +127,14 @@ void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture) 
 	if (SceneCapture) {
 		SceneCapture->FOVAngle = Camera->FieldOfView;
 		// Set custom projection matrix
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Green, FString::Printf(TEXT("DepthCameraActor.cpp: FOVAngle %f"), SceneCapture->FOVAngle));
+
 		const float FOV = SceneCapture->FOVAngle * (float)PI / 360.0f;
 		const float AspectRatio = (float)SceneCapture->TextureTarget->GetSurfaceWidth() / (float)SceneCapture->TextureTarget->GetSurfaceHeight();
+
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Green, FString::Printf(TEXT("DepthCameraActor.cpp: FOV %f"), FOV));
 
 		const float Near = 0.1f;
 		const float Far = FarClip;

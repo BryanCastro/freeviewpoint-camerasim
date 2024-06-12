@@ -133,6 +133,9 @@ void ACameraManager::SpawnCameras() {
 		case CameraSetupEnum::SEMI_SPHERE:
 			SpawnCamerasInHemisphere();
 			break;
+		case CameraSetupEnum::STEREO_HEMISPHERE:
+			SpawnStereoCamerasInHemisphere();
+			break;
 		default:
 			break;
 	}
@@ -208,6 +211,37 @@ void ACameraManager::SpawnCamerasInHemisphere() {
         SpawnParams.Instigator = GetInstigator();
 
         AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
+    }
+}
+
+void ACameraManager::SpawnStereoCamerasInHemisphere() {
+    const float Phi = (1 + sqrt(5)) / 2; // Golden ratio
+    const float EyeSeparation = 3.25f; // Interocular distance
+
+    for (int32 i = 0; i < NumOfCameras; i++)
+    {
+        float theta = 2 * PI * i / Phi;
+        float z = 1 - (i / (NumOfCameras - 1.0f)); // z goes from 1 to 0
+        float radius = sqrt(i) / sqrt(NumOfCameras); // radius increases as i increases
+
+        float x = cos(theta) * radius;
+        float y = sin(theta) * radius;
+
+        FVector BaseLocation = FVector(x, y, z) * SphereRadius;
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+        // Spawn left camera
+        FVector LeftEyeLocation = BaseLocation + FVector(0, -EyeSeparation / 2, 0);
+        FRotator LeftEyeRotation = UKismetMathLibrary::FindLookAtRotation(LeftEyeLocation, FVector::ZeroVector);
+        AddCameraToList(LeftEyeLocation, LeftEyeRotation, SpawnParams);
+
+        // Spawn right camera
+        FVector RightEyeLocation = BaseLocation + FVector(0, EyeSeparation / 2, 0);
+        FRotator RightEyeRotation = UKismetMathLibrary::FindLookAtRotation(RightEyeLocation, FVector::ZeroVector);
+        AddCameraToList(RightEyeLocation, RightEyeRotation, SpawnParams);
     }
 }
 
@@ -308,12 +342,14 @@ void ACameraManager::RenderImages() {
 		// Get the Lens settings.
 		float MinFocalLength = CameraLensSettings.MinFocalLength;
 		float MaxFocalLength = CameraLensSettings.MaxFocalLength;
+		float FieldOfView = DepthCamera->Camera->GetHorizontalFieldOfView();
 		// Add other lens settings here...
 
 		// Create a new JSON object for the Lens settings.
 		TSharedPtr<FJsonObject> LensObject = MakeShareable(new FJsonObject);
 		LensObject->SetNumberField("MinFocalLength", MinFocalLength);
 		LensObject->SetNumberField("MaxFocalLength", MaxFocalLength);
+		LensObject->SetNumberField("Horizontal Field of View", FieldOfView);
 		// Add other lens settings here...
 
 		TSharedPtr<FJsonObject> OtherObject = MakeShareable(new FJsonObject);

@@ -22,7 +22,7 @@ enum class CameraSetupEnum : uint8
 	CIRCLE_XZ  UMETA(DisplayName = "CIRCLE_PLANE_XZ"),
 	CIRCLE_YZ  UMETA(DisplayName = "CIRCLE_PLANE_YZ"),
 	SEMI_SPHERE UMETA(DisplayName = "SEMI_SPHERE"),
-
+	STEREO_HEMISPHERE UMETA(DisplayName = "STEREO_HEMISPHERE")
 };
 
 UCLASS()
@@ -57,6 +57,7 @@ protected:
 	void SpawnCamerasInCircle(FString axis);
 	void ClearSpawnedCameras();
 	void SpawnCameras();
+	void SpawnStereoCamerasInHemisphere();
 	void AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams);
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
