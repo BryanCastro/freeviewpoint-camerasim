@@ -87,6 +87,8 @@ void ACameraManager::BeginPlay()
 	}
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Num of Cameras: %d"), DepthCameras.Num()));
+	if (CharacterToMask)
+		CharacterToMask->SetActorHiddenInGame(true);
 }
 
 void ACameraManager::SpawnCameras() {
@@ -301,7 +303,7 @@ void ACameraManager::RenderImages() {
 
 	for (auto camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
-		DepthCamera->RenderImages(true, CharacterToMask);
+		DepthCamera->RenderImages(bCaptureMask, CharacterToMask);
 
 		// Get the camera's world position and rotation.
 		FVector Position = camera->GetActorLocation();

@@ -77,6 +77,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
 	AActor* CharacterToMask;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
+	bool bCaptureMask = true;
 
 	int32 NumOfCamerasInScene = 0;
 
