@@ -9,6 +9,8 @@
 class USceneCaptureComponent2D;
 class UCineCameraComponent;
 class UTextureRenderTarget2D;
+class APostProcessVolume;
+class UMaterialInstance;
 
 UCLASS()
 class FREEVIEWPOINTCAMERA_API ADepthCameraActor : public AActor
@@ -50,7 +52,7 @@ public:
 	UFUNCTION()
 	const FRotator GetRotation();
 
-	void RenderImages(bool bCaptureMask, AActor* CharacterToMask);
+	void RenderImages(bool bCaptureMask, UMaterialInstance* MetaHumanMaskMaterialInstance);
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
 	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
 	void SetFarClipDistance(float FarClipDistance);
@@ -59,9 +61,6 @@ public:
 	FString GetCameraName();
 	void SetCameraName(int index);
 
-
-	UPROPERTY()
-	UMaterialInstance* DepthMaterialInstance;
 	FTimerHandle UnusedHandle;
 
 

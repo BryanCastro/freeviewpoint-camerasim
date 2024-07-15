@@ -16,6 +16,7 @@
 #include "CineCameraComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "Engine/PostProcessVolume.h"
 
 
 // Sets default values
@@ -27,6 +28,10 @@ ACameraManager::ACameraManager()
 	if (!CameraActorClassRef) {
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Failed to Find Camera Blueprint Class Reference!")));
+	}
+	if (!MetaHumanMaskMaterialInstance) {
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Failed to Find MetaHumanMaskMaterialInstance Reference!")));
 	}
 
 }
@@ -87,8 +92,7 @@ void ACameraManager::BeginPlay()
 	}
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: Num of Cameras: %d"), DepthCameras.Num()));
-	if (CharacterToMask)
-		CharacterToMask->SetActorHiddenInGame(true);
+
 }
 
 void ACameraManager::SpawnCameras() {
@@ -96,16 +100,14 @@ void ACameraManager::SpawnCameras() {
 
 	ClearSpawnedCameras();
 
-	if(!ActorToIngore) {
+	if(!BP_SphereRef) {
 		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No ActorToIgnore Set! Cameras will not spawn")));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No BP_SphereRef Set! Cameras will not spawn")));
 		return;
 	}
-	if(!CharacterToMask) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No CharacterToCapture Set! Cameras will not spawn")));
-		return;
-	}
+
+	float SphereScale = (SphereRadius * 0.0225f);
+	BP_SphereRef->SetActorScale3D(FVector(SphereScale, SphereScale, SphereScale));
 
 	switch (CurrentState) {
 		case CameraSetupEnum::SPHERE:
@@ -179,14 +181,14 @@ void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotati
 	if (NewCamera) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(NewCamera);
 		DepthCamera->SetCameraName(NumOfCamerasInScene);
+		
 		if(bRandomRadius)
 			DepthCamera->SetDistanceFromLookTarget(NewDistance);
 		else
 			DepthCamera->SetDistanceFromLookTarget(SphereRadius);
 
 		DepthCamera->Camera->CurrentAperture = 22.0f;
-		DepthCamera->SceneRGBDCapture->HiddenActors.Add(ActorToIngore);
-		DepthCamera->SceneMaskCapture->ShowOnlyActors.Add(CharacterToMask);
+		DepthCamera->SceneRGBDCapture->HiddenActors.Add(BP_SphereRef);
 		DepthCameras.Add(NewCamera);
 	
 		NumOfCamerasInScene++;
@@ -278,11 +280,14 @@ void ACameraManager::SpawnCamerasInCircle(FString axis) {
 
 
 void ACameraManager::ClearSpawnedCameras() {
-	for (AActor* Camera : DepthCameras) {
+	TArray<AActor*> SpawnedCameras;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADepthCameraActor::StaticClass(), SpawnedCameras);
+	for (AActor* Camera : SpawnedCameras) {
 		if (Camera) {
 			Camera->Destroy();
 		}
 	}
+
 	DepthCameras.Empty();
 	NumOfCamerasInScene = 0;
 }
@@ -303,7 +308,7 @@ void ACameraManager::RenderImages() {
 
 	for (auto camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
-		DepthCamera->RenderImages(bCaptureMask, CharacterToMask);
+		DepthCamera->RenderImages(bCaptureMask, MetaHumanMaskMaterialInstance);
 
 		// Get the camera's world position and rotation.
 		FVector Position = camera->GetActorLocation();

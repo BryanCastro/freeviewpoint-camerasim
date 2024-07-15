@@ -15,6 +15,8 @@
 #include "HAL/PlatformFilemanager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Light.h"
+#include "Engine/PostProcessVolume.h"
+
 
 
 // Sets default values
@@ -36,15 +38,6 @@ ADepthCameraActor::ADepthCameraActor()
 	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget"));
 	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget"));
 	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderMaskTarget"));
-
-    // Initialize DepthMaterialInstance
-	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialInstance(TEXT("MaterialInstanceConstant'/Game/Materials/MI_PostProcessDepth.MI_PostProcessDepth'"));
-	if (MaterialInstance.Succeeded()) {
-		DepthMaterialInstance = MaterialInstance.Object;
-	} else {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("DepthCameraActor.cpp: Failed to Load MI_PostProcessDepth in Constructor!")));
-	}
 
 
 }
@@ -72,6 +65,7 @@ void ADepthCameraActor::BeginPlay()
 	SceneRGBDCapture->CaptureSource = ESceneCaptureSource::SCS_SceneDepth;
 	SceneRGBDCapture->bCaptureEveryFrame = false;
 	SceneRGBDCapture->bCaptureOnMovement = false;
+	SceneRGBDCapture->bAlwaysPersistRenderingState = true;
 
 	// Enable important flags for capturing lighting
 	SceneRGBDCapture->ShowFlags.SetLighting(true);
@@ -84,6 +78,7 @@ void ADepthCameraActor::BeginPlay()
 	SceneRGBCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
 	SceneRGBCapture->bCaptureEveryFrame = false;
 	SceneRGBCapture->bCaptureOnMovement = false;
+	SceneRGBCapture->bAlwaysPersistRenderingState = true;
 
 	// Enable important flags for capturing lighting
 	SceneRGBCapture->ShowFlags.SetLighting(true);
@@ -93,23 +88,15 @@ void ADepthCameraActor::BeginPlay()
 	SceneMaskCapture->TextureTarget = RenderMaskTarget;
 	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-	SceneMaskCapture->bCaptureEveryFrame = false;
+	SceneMaskCapture->bCaptureEveryFrame = true;
 	SceneMaskCapture->bCaptureOnMovement = false;
+	SceneMaskCapture->bAlwaysPersistRenderingState = true;
 
 
-	
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(0, 20.0f, FColor::Green, FString::Printf(TEXT("In Constructor!")));
-
-
-	if (DepthMaterialInstance == nullptr) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Red, FString::Printf(TEXT("DepthCameraActor.cpp: DepthMaterialInstance is Empty!")));
-	}
-	else {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Green, FString::Printf(TEXT("DepthCameraActor.cpp: DepthMaterialInstance Valid!")));
-	}
+	// Enable important flags for capturing lighting
+	SceneMaskCapture->ShowFlags.SetLighting(true);
+	SceneMaskCapture->ShowFlags.SetDynamicShadows(true);
+	SceneMaskCapture->ShowFlags.SetGlobalIllumination(true);
 
 }
 
@@ -164,7 +151,7 @@ FString ADepthCameraActor::GetCameraName() {
 	return CameraName;
 }
 
-void ADepthCameraActor::RenderImages(bool bCaptureMask, AActor* CharacterToMask){
+void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaHumanMaskMaterialInstance){
 	// Update the time accumulator
 	//TimeAccumulator += DeltaTime;
 
@@ -181,28 +168,13 @@ void ADepthCameraActor::RenderImages(bool bCaptureMask, AActor* CharacterToMask)
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActors);
 
 		if (bCaptureMask) {
-			//Hide all actors Besides the character
-			for (AActor* Actor : AllActors) {
-        		if (Actor != CharacterToMask)
-				{
-					Actor->SetActorHiddenInGame(true);
-				}
-			}
-			
-			CharacterToMask->SetActorHiddenInGame(false);
-			SceneMaskCapture->CaptureScene();
-			CharacterToMask->SetActorHiddenInGame(true);
 
-			// Show all actors again
-			for (AActor* Actor : AllActors)
-			{
-        		if (Actor != CharacterToMask)
-				{
-					Actor->SetActorHiddenInGame(false);
-				}
-			}
+
+			SceneMaskCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 1.0f);
+			SceneMaskCapture->CaptureScene();
+			//SceneMaskCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 0.0f);
 		}
-	
+		
 
 		FString Name = GetCameraName();
 		// Call the function to save the render targets

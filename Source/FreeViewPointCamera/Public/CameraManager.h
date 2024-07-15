@@ -10,6 +10,7 @@ class ADepthCameraActor;
 class UMaterialInstance;
 class AStaticMeshActor;
 class ACharacter;
+class APostProcessVolume;
 
 UENUM(BlueprintType)
 enum class CameraSetupEnum : uint8
@@ -60,6 +61,8 @@ protected:
 	void SpawnStereoCamerasInHemisphere();
 	void AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams);
 
+
+
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	TSubclassOf<AActor> CameraActorClassRef;
 
@@ -73,14 +76,15 @@ protected:
 	void RenderImages();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings")
-	AStaticMeshActor* ActorToIngore;
+	AStaticMeshActor* BP_SphereRef;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
-	AActor* CharacterToMask;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
 	bool bCaptureMask = true;
 
 	int32 NumOfCamerasInScene = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
+	UMaterialInstance* MetaHumanMaskMaterialInstance;
 
 public:	
 	// Called every frame
