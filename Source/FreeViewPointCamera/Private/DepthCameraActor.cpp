@@ -16,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Light.h"
 #include "Engine/PostProcessVolume.h"
+#include "Misc/Guid.h"
 
 
 
@@ -37,9 +38,14 @@ ADepthCameraActor::ADepthCameraActor()
 
 	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget"));
 	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget"));
-	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderMaskTarget"));
 
+	// Generate a new GUID
+	FGuid NewGuid = FGuid::NewGuid();
+	FString GuidString = NewGuid.ToString();
+	FName UniqueName = FName(*FString::Printf(TEXT("RenderMaskTarget_%s"), *GuidString));
 
+	//FString RenderTargetName = FString::Printf(TEXT("RenderMaskTarget_%d"), NewGuid);
+	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(UniqueName);
 }
 
 // Called when the game starts or when spawned
@@ -65,20 +71,19 @@ void ADepthCameraActor::BeginPlay()
 	SceneRGBDCapture->CaptureSource = ESceneCaptureSource::SCS_SceneDepth;
 	SceneRGBDCapture->bCaptureEveryFrame = false;
 	SceneRGBDCapture->bCaptureOnMovement = false;
-	SceneRGBDCapture->bAlwaysPersistRenderingState = true;
+	SceneRGBDCapture->bAlwaysPersistRenderingState = false;
 
 	// Enable important flags for capturing lighting
 	SceneRGBDCapture->ShowFlags.SetLighting(true);
 	SceneRGBDCapture->ShowFlags.SetDynamicShadows(true);
 	SceneRGBDCapture->ShowFlags.SetGlobalIllumination(true);
-	//SceneRGBDCapture->PostProcessSettings.AddBlendable(DepthMaterialInstance, 1);
 
 	SceneRGBCapture->TextureTarget = RenderRGBTarget;
 	SceneRGBCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneRGBCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
 	SceneRGBCapture->bCaptureEveryFrame = false;
 	SceneRGBCapture->bCaptureOnMovement = false;
-	SceneRGBCapture->bAlwaysPersistRenderingState = true;
+	SceneRGBCapture->bAlwaysPersistRenderingState = false;
 
 	// Enable important flags for capturing lighting
 	SceneRGBCapture->ShowFlags.SetLighting(true);
@@ -88,7 +93,7 @@ void ADepthCameraActor::BeginPlay()
 	SceneMaskCapture->TextureTarget = RenderMaskTarget;
 	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
 	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-	SceneMaskCapture->bCaptureEveryFrame = true;
+	SceneMaskCapture->bCaptureEveryFrame = false;
 	SceneMaskCapture->bCaptureOnMovement = false;
 	SceneMaskCapture->bAlwaysPersistRenderingState = true;
 
@@ -163,16 +168,10 @@ void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaH
 		SceneRGBDCapture->CaptureScene();
 		SceneRGBCapture->CaptureScene();
 
-		// Get all actors in the world
-		TArray<AActor*> AllActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActors);
-
 		if (bCaptureMask) {
-
 
 			SceneMaskCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 1.0f);
 			SceneMaskCapture->CaptureScene();
-			//SceneMaskCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 0.0f);
 		}
 		
 
@@ -180,11 +179,11 @@ void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaH
 		// Call the function to save the render targets
 		SaveRenderTargetToDisk(RenderRGBDTarget, Name + FString("_RGBD"), true);
 		SaveRenderTargetToDisk(RenderRGBTarget, Name + FString("_RGB"));
-		SaveRenderTargetToDisk(RenderMaskTarget, Name + FString("_Mask"));
+		SaveRenderTargetToDisk(RenderMaskTarget, Name + FString("_Mask"), true);
 		// Reset the time accumulator
-		TimeAccumulator -= (1.0f / 24.0f);
+		//TimeAccumulator -= (1.0f / 24.0f);
 
-		CurrentFramesCaptured++;
+		//CurrentFramesCaptured++;
   //	}
 }
 
@@ -193,9 +192,6 @@ void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaH
 void ADepthCameraActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
-
 }
 
 const FVector ADepthCameraActor::GetPosition() {

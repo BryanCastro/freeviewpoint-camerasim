@@ -22,8 +22,9 @@ enum class CameraSetupEnum : uint8
 	CIRCLE_XY   UMETA(DisplayName = "CIRCLE_PLANE_XY"),
 	CIRCLE_XZ  UMETA(DisplayName = "CIRCLE_PLANE_XZ"),
 	CIRCLE_YZ  UMETA(DisplayName = "CIRCLE_PLANE_YZ"),
-	SEMI_SPHERE UMETA(DisplayName = "SEMI_SPHERE"),
-	STEREO_HEMISPHERE UMETA(DisplayName = "STEREO_HEMISPHERE")
+	HEMI_SPHERE UMETA(DisplayName = "SEMI_SPHERE"),
+	STEREO_HEMISPHERE UMETA(DisplayName = "STEREO_HEMISPHERE"),
+	CUBE_STEREO UMETA(DisplayName = "CUBE_STEREO")
 };
 
 UCLASS()
@@ -51,6 +52,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
 	float SphereRadius = 1000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+	float CubeSize = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+	int Rows=1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+	int Cols = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
 	bool bRandomRadius = false;
 
 	void SpawnCamerasInSphere();
@@ -59,8 +66,9 @@ protected:
 	void ClearSpawnedCameras();
 	void SpawnCameras();
 	void SpawnStereoCamerasInHemisphere();
+	void SpawnCamerasOnCubeWalls();
 	void AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams);
-
+	void SpawnCameraAtLocation(FVector Location, FRotator Rotation);
 
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
@@ -68,9 +76,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
 	CameraSetupEnum CurrentState=CameraSetupEnum::SPHERE;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
-	UMaterialInstance* DepthMaterialInstance;
 	
 	UFUNCTION(BlueprintCallable)
 	void RenderImages();

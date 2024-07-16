@@ -55,6 +55,12 @@ void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, NumOfCamerasInScene)) {
 		SpawnCameras();
 	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, Rows)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, Cols)) {
+		SpawnCameras();
+	}
 }
 
 #endif
@@ -134,16 +140,53 @@ void ACameraManager::SpawnCameras() {
 			SpawnCamerasInCircle("Y");
 			SpawnCamerasInCircle("Z");
 			break;
-		case CameraSetupEnum::SEMI_SPHERE:
+		case CameraSetupEnum::HEMI_SPHERE:
 			SpawnCamerasInHemisphere();
 			break;
 		case CameraSetupEnum::STEREO_HEMISPHERE:
 			SpawnStereoCamerasInHemisphere();
 			break;
+		case CameraSetupEnum::CUBE_STEREO:
+			SpawnCamerasOnCubeWalls();
+			break;
 		default:
 			break;
 	}
 
+}
+void ACameraManager::SpawnCamerasOnCubeWalls() {
+	FVector WallNormals[6] = {FVector(1, 0, 0), FVector(-1, 0, 0), FVector(0, 1, 0), FVector(0, -1, 0), FVector(0, 0, 1), FVector(0, 0, -1)};
+    FVector UpVectors[6] = {FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 1, 0), FVector(0, -1, 0)};
+    FVector RightVectors[6] = {FVector(0, 1, 0), FVector(0, -1, 0), FVector(-1, 0, 0), FVector(1, 0, 0), FVector(1, 0, 0), FVector(-1, 0, 0)};
+
+    float RowSpacing = CubeSize / Rows;
+    float ColSpacing = CubeSize / Cols;
+
+    for (int wall = 0; wall < 6; ++wall) {
+        FVector WallCenter = WallNormals[wall] * (CubeSize / 2);
+        FVector StartPosition = WallCenter - (RightVectors[wall] * (CubeSize / 2 - ColSpacing / 2)) - (UpVectors[wall] * (CubeSize / 2 - RowSpacing / 2));
+
+        for (int row = 0; row < Rows; ++row) {
+            for (int col = 0; col < Cols; ++col) {
+                FVector SpawnLocation = StartPosition + (RightVectors[wall] * ColSpacing * col) + (UpVectors[wall] * RowSpacing * row);
+                // Adjust SpawnRotation to make the camera face straight ahead relative to the wall
+                FRotator SpawnRotation = WallNormals[wall].Rotation()*-1;
+
+                SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
+            }
+        }
+    }
+}
+
+void ACameraManager::SpawnCameraAtLocation(FVector Location, FRotator Rotation){
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+
+	AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, Location, Rotation, SpawnParams);
+	if (NewCamera) {
+		AddCameraToList(Location, Rotation, SpawnParams);
+	}
 }
 
 void ACameraManager::SpawnCamerasInSphere() {
