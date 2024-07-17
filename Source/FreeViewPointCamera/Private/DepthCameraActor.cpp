@@ -17,6 +17,8 @@
 #include "Engine/Light.h"
 #include "Engine/PostProcessVolume.h"
 #include "Misc/Guid.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
 
 
 
@@ -36,16 +38,14 @@ ADepthCameraActor::ADepthCameraActor()
 	SceneMaskCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneMaskCapture"));
 	SceneMaskCapture->SetupAttachment(Camera);
 
+	// Generate a new GUID
+	//FGuid NewGuid = FGuid::NewGuid();
+	//FString GuidString = NewGuid.ToString();
+	//FName UniqueName = FName(*FString::Printf(TEXT("RenderRGBDTarget_%s"), *GuidString));
+
 	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget"));
 	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget"));
-
-	// Generate a new GUID
-	FGuid NewGuid = FGuid::NewGuid();
-	FString GuidString = NewGuid.ToString();
-	FName UniqueName = FName(*FString::Printf(TEXT("RenderMaskTarget_%s"), *GuidString));
-
-	//FString RenderTargetName = FString::Printf(TEXT("RenderMaskTarget_%d"), NewGuid);
-	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(UniqueName);
+	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderMaskTarget"));
 }
 
 // Called when the game starts or when spawned
@@ -84,6 +84,8 @@ void ADepthCameraActor::BeginPlay()
 	SceneRGBCapture->bCaptureEveryFrame = false;
 	SceneRGBCapture->bCaptureOnMovement = false;
 	SceneRGBCapture->bAlwaysPersistRenderingState = false;
+	ApplyPostProcessSettingsToSceneCapture(GetWorld(), SceneRGBCapture);
+
 
 	// Enable important flags for capturing lighting
 	SceneRGBCapture->ShowFlags.SetLighting(true);
@@ -96,7 +98,6 @@ void ADepthCameraActor::BeginPlay()
 	SceneMaskCapture->bCaptureEveryFrame = false;
 	SceneMaskCapture->bCaptureOnMovement = false;
 	SceneMaskCapture->bAlwaysPersistRenderingState = true;
-
 
 	// Enable important flags for capturing lighting
 	SceneMaskCapture->ShowFlags.SetLighting(true);
@@ -204,55 +205,53 @@ const FRotator ADepthCameraActor::GetRotation(){
 
 
 
-	// Save the pixel data to a bitmap file
-void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth) {
-
+void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth)
+{
 	if (!RenderTarget)
 		return;
 
 	FTextureRenderTargetResource* RenderTargetResource = RenderTarget->GameThread_GetRenderTargetResource();
 	FReadSurfaceDataFlags ReadSurfaceDataFlags(RCM_UNorm);
-	ReadSurfaceDataFlags.SetLinearToGamma(false);
-
+	ReadSurfaceDataFlags.SetLinearToGamma(true); // Ensure gamma correction is applied
 
 	int32 Width = RenderTarget->SizeX;
-    int32 Height = RenderTarget->SizeY;
+	int32 Height = RenderTarget->SizeY;
 
-    TArray<FColor> Bitmap;
-    Bitmap.AddUninitialized(Width * Height);
+	TArray<FColor> Bitmap;
+	Bitmap.AddUninitialized(Width * Height);
 
-   // Initialize a depth buffer with a large initial depth for each pixel
-    TArray<float> DepthBuffer;
-    DepthBuffer.AddUninitialized(Width * Height);
-    for (auto& Depth : DepthBuffer)
-    {
-        Depth = FLT_MAX;
-    }
+	// Read the render target surface data into an array
+	RenderTargetResource->ReadPixels(Bitmap, ReadSurfaceDataFlags);
 
-    // Read the render target surface data into an array
-    RenderTargetResource->ReadPixels(Bitmap, ReadSurfaceDataFlags);
+	if (bIsDepth)
+	{
+		// Initialize a depth buffer with a large initial depth for each pixel
+		TArray<float> DepthBuffer;
+		DepthBuffer.AddUninitialized(Width * Height);
+		for (auto& Depth : DepthBuffer)
+		{
+			Depth = FLT_MAX;
+		}
 
-    if(bIsDepth){
-        // Convert to grayscale and implement depth testing
-        for (int32 i = 0; i < Bitmap.Num(); ++i)
-        {
-            auto& Color = Bitmap[i];
-            float NewDepth = Color.R / 255.0f; // Assuming depth is stored in the red channel and normalized to [0, 1]
-            // Only overwrite the pixel if the new pixel is closer to the camera
-            if (NewDepth < DepthBuffer[i])
-            {
-                uint8 GrayValue = Color.R;
-                Color = FColor(GrayValue, GrayValue, GrayValue, 255); // Set RGB to the same gray value and Alpha to 255
-                DepthBuffer[i] = NewDepth;
-            }
-        }
-    }
-
+		// Convert to grayscale and implement depth testing
+		for (int32 i = 0; i < Bitmap.Num(); ++i)
+		{
+			auto& Color = Bitmap[i];
+			float NewDepth = Color.R / 255.0f; // Assuming depth is stored in the red channel and normalized to [0, 1]
+			// Only overwrite the pixel if the new pixel is closer to the camera
+			if (NewDepth < DepthBuffer[i])
+			{
+				uint8 GrayValue = Color.R;
+				Color = FColor(GrayValue, GrayValue, GrayValue, 255); // Set RGB to the same gray value and Alpha to 255
+				DepthBuffer[i] = NewDepth;
+			}
+		}
+	}
 
 	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
 	TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
 
-	ImageWrapper->SetRaw(Bitmap.GetData(), Bitmap.GetAllocatedSize(), RenderTarget->SizeX, RenderTarget->SizeY, ERGBFormat::BGRA, 8);
+	ImageWrapper->SetRaw(Bitmap.GetData(), Bitmap.Num() * sizeof(FColor), Width, Height, ERGBFormat::BGRA, 8);
 
 	// Get compressed data as TArray64<uint8>
 	const TArray64<uint8>& PNGData64 = ImageWrapper->GetCompressed(100);
@@ -266,7 +265,6 @@ void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTar
 	FString FilePath = DirectoryPath / (FileName + TEXT(".png"));
 	// Save the PNG file
 	bool bSuccess = FFileHelper::SaveArrayToFile(PNGData, *FilePath);
-	
 }
 	
 void ADepthCameraActor::SetDistanceFromLookTarget(float Distance){
@@ -275,4 +273,81 @@ void ADepthCameraActor::SetDistanceFromLookTarget(float Distance){
 
 float ADepthCameraActor::GetDistanceFromLookTarget(){
 	return DistanceFromLookTarget;
+}
+
+void ADepthCameraActor::SetupSceneCaptureComponent(UWorld* World, USceneCaptureComponent2D* SceneCaptureComponent)
+{
+	SceneCaptureComponent->CaptureSource = ESceneCaptureSource::SCS_FinalColorHDR; // or SCS_FinalColorLDR
+	ApplyPostProcessSettingsToSceneCapture(World, SceneCaptureComponent);
+}
+
+void ADepthCameraActor::ApplyPostProcessSettingsToSceneCapture(UWorld* World, USceneCaptureComponent2D* SceneCaptureComponent)
+{
+	FPostProcessSettings CombinedPostProcessSettings;
+
+	// Retrieve settings from the global post-process volume
+	for (TActorIterator<APostProcessVolume> It(World); It; ++It)
+	{
+		APostProcessVolume* PPVolume = *It;
+		if (PPVolume && PPVolume->bUnbound)
+		{
+			CombinedPostProcessSettings = PPVolume->Settings;
+			break;
+		}
+	}
+
+	// Apply the post-process settings to the scene capture component
+	SceneCaptureComponent->PostProcessSettings = CombinedPostProcessSettings;
+}
+
+void ADepthCameraActor::DisableCamera() {
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+
+	TArray<USceneComponent*> Components;
+	GetComponents(Components);
+
+	for (USceneComponent* Component : Components) {
+		USceneCaptureComponent2D* SceneCamptureComponent = Cast<USceneCaptureComponent2D>(Component);
+		if (SceneCamptureComponent) {
+			SceneCamptureComponent->SetComponentTickEnabled(false);
+			SceneCamptureComponent->Deactivate();
+			//SceneCamptureComponent->TextureTarget=nullptr;
+		}
+
+		// Disable collision for other components
+		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Component);
+		if (PrimitiveComponent)
+		{
+			PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
+
+}
+void ADepthCameraActor::EnableCamera() {
+
+	SetActorHiddenInGame(false);
+	SetActorTickEnabled(true);
+
+	// Enable scene capture components
+	TArray<USceneComponent*> Components;
+	GetComponents(Components);
+
+	for (USceneComponent* Component : Components)
+	{
+		USceneCaptureComponent2D* SceneCaptureComponent = Cast<USceneCaptureComponent2D>(Component);
+		if (SceneCaptureComponent)
+		{
+			SceneCaptureComponent->SetComponentTickEnabled(true);
+			SceneCaptureComponent->Activate();
+			//SceneCaptureComponent->TextureTarget = RenderTarget;
+		}
+
+		// Enable collision for other components if needed
+		UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Component);
+		if (PrimitiveComponent)
+		{
+			PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
+	}
 }

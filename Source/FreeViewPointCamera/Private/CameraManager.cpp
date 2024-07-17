@@ -55,10 +55,31 @@ void ACameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChang
 	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, NumOfCamerasInScene)) {
 		SpawnCameras();
 	}
-	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, Rows)) {
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, CubeRows)) {
 		SpawnCameras();
 	}
-	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, Cols)) {
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, CubeCols)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, CubeSize)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, BaseCubeHeightOffset)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, HexagonHeight)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, HexagonWidth)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, BaseHexagonHeightOffset)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, HexagonRows)) {
+		SpawnCameras();
+	}
+	else if (PropertyName == GET_MEMBER_NAME_CHECKED(ACameraManager, HexagonCols)) {
 		SpawnCameras();
 	}
 }
@@ -86,14 +107,14 @@ void ACameraManager::BeginPlay()
 	SpawnCameras();
 	for (auto Camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
-		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 3);
+		DepthCamera->SetFarClipDistance(FarClipDistance);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
-		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 2);
+		DepthCamera->SetFarClipDistance(FarClipDistance);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
-		DepthCamera->SetFarClipDistance(DepthCamera->GetDistanceFromLookTarget() * 3);
+		DepthCamera->SetFarClipDistance(FarClipDistance);
 		DepthCamera->SetFarClipPlane(DepthCamera->SceneMaskCapture);
+		DepthCamera->DisableCamera();
 
-		DepthCamera->SetHidden(true);
 		//DepthCamera->SetCameraName(CameraName);
 	}
 	if (GEngine)
@@ -106,14 +127,8 @@ void ACameraManager::SpawnCameras() {
 
 	ClearSpawnedCameras();
 
-	if(!BP_SphereRef) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("CameraManager.cpp: No BP_SphereRef Set! Cameras will not spawn")));
-		return;
-	}
 
-	float SphereScale = (SphereRadius * 0.0225f);
-	BP_SphereRef->SetActorScale3D(FVector(SphereScale, SphereScale, SphereScale));
+
 
 	switch (CurrentState) {
 		case CameraSetupEnum::SPHERE:
@@ -149,33 +164,148 @@ void ACameraManager::SpawnCameras() {
 		case CameraSetupEnum::CUBE_STEREO:
 			SpawnCamerasOnCubeWalls();
 			break;
+		case CameraSetupEnum::HEXAGON:
+			SpawnCamerasOnHexagonWalls();
+			break;
 		default:
 			break;
 	}
 
 }
+
 void ACameraManager::SpawnCamerasOnCubeWalls() {
-	FVector WallNormals[6] = {FVector(1, 0, 0), FVector(-1, 0, 0), FVector(0, 1, 0), FVector(0, -1, 0), FVector(0, 0, 1), FVector(0, 0, -1)};
-    FVector UpVectors[6] = {FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 1, 0), FVector(0, -1, 0)};
-    FVector RightVectors[6] = {FVector(0, 1, 0), FVector(0, -1, 0), FVector(-1, 0, 0), FVector(1, 0, 0), FVector(1, 0, 0), FVector(-1, 0, 0)};
+	FVector WallNormals[6] = { FVector(1, 0, 0), FVector(-1, 0, 0), FVector(0, 1, 0), FVector(0, -1, 0), FVector(0, 0, 1), FVector(0, 0, -1) };
+	FVector UpVectors[6] = { FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 1, 0), FVector(0, -1, 0) };
+	FVector RightVectors[6] = { FVector(0, 1, 0), FVector(0, -1, 0), FVector(-1, 0, 0), FVector(1, 0, 0), FVector(1, 0, 0), FVector(-1, 0, 0) };
 
-    float RowSpacing = CubeSize / Rows;
-    float ColSpacing = CubeSize / Cols;
+	float RowSpacing = CubeSize / CubeRows;
+	float ColSpacing = CubeSize / CubeCols;
 
-    for (int wall = 0; wall < 6; ++wall) {
-        FVector WallCenter = WallNormals[wall] * (CubeSize / 2);
-        FVector StartPosition = WallCenter - (RightVectors[wall] * (CubeSize / 2 - ColSpacing / 2)) - (UpVectors[wall] * (CubeSize / 2 - RowSpacing / 2));
+	// Adjust the loop to skip the last element, which represents the lower wall
+	for (int wall = 0; wall < 5; ++wall) {
+		FVector WallCenter = WallNormals[wall] * (CubeSize / 2);
+		FVector StartPosition = WallCenter - (RightVectors[wall] * (CubeSize / 2 - ColSpacing / 2)) - (UpVectors[wall] * (CubeSize / 2 - RowSpacing / 2));
 
-        for (int row = 0; row < Rows; ++row) {
-            for (int col = 0; col < Cols; ++col) {
-                FVector SpawnLocation = StartPosition + (RightVectors[wall] * ColSpacing * col) + (UpVectors[wall] * RowSpacing * row);
-                // Adjust SpawnRotation to make the camera face straight ahead relative to the wall
-                FRotator SpawnRotation = WallNormals[wall].Rotation()*-1;
+		for (int row = 0; row < CubeRows; ++row) {
+			for (int col = 0; col < CubeCols; ++col) {
+				FVector SpawnLocation = StartPosition + (RightVectors[wall] * ColSpacing * col) + (UpVectors[wall] * RowSpacing * row);
+				FRotator SpawnRotation = WallNormals[wall].Rotation();
 
-                SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
-            }
-        }
-    }
+				SpawnLocation.Z += BaseCubeHeightOffset;
+
+				// Rotate the camera to face outward from the cube wall
+				SpawnRotation.Yaw += 180.0f;
+
+				// Special adjustment for cameras on the upper wall
+				if (wall == 4) { // Upper wall
+					SpawnRotation.Pitch += 180.0f;
+				}
+
+				SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
+			}
+		}
+	}
+
+}
+
+void ACameraManager::SpawnCamerasOnHexagonWalls() {
+	FVector WallNormals[8] = {
+		FVector(FMath::Cos(FMath::DegreesToRadians(0)), FMath::Sin(FMath::DegreesToRadians(0)), 0),
+		FVector(FMath::Cos(FMath::DegreesToRadians(60)), FMath::Sin(FMath::DegreesToRadians(60)), 0),
+		FVector(FMath::Cos(FMath::DegreesToRadians(120)), FMath::Sin(FMath::DegreesToRadians(120)), 0),
+		FVector(FMath::Cos(FMath::DegreesToRadians(180)), FMath::Sin(FMath::DegreesToRadians(180)), 0),
+		FVector(FMath::Cos(FMath::DegreesToRadians(240)), FMath::Sin(FMath::DegreesToRadians(240)), 0),
+		FVector(FMath::Cos(FMath::DegreesToRadians(300)), FMath::Sin(FMath::DegreesToRadians(300)), 0),
+		FVector(0, 0, 1), // Top
+		FVector(0, 0, -1) // Bottom
+	};
+	FVector UpVectors[8] = {
+		FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1),
+		FVector(0, 0, 1), FVector(0, 0, 1), FVector(0, 0, 1),
+		FVector(0, 1, 0), // Top
+		FVector(0, -1, 0) // Bottom
+	};
+	// Right vectors are calculated as cross product of wall normal and up vector for each wall
+	FVector RightVectors[8];
+	for (int i = 0; i < 8; ++i) {
+		RightVectors[i] = FVector::CrossProduct(WallNormals[i], UpVectors[i]).GetSafeNormal();
+	}
+
+	float RowSpacing = HexagonHeight / HexagonRows; // Use HexagonHeight for vertical spacing
+	float ColSpacing = HexagonWidth / HexagonCols; // Use HexagonWidth for horizontal spacing
+
+	for (int wall = 0; wall < 7; ++wall) { // Include all walls
+		FVector WallCenter;
+		if (wall < 6) { // Side walls
+			WallCenter = WallNormals[wall] * (HexagonWidth / 2);
+		}
+		else { // Top and bottom walls
+			// Adjust WallCenter calculation for top and bottom walls
+			WallCenter = WallNormals[wall] * (HexagonHeight / 2);
+		}
+
+		FVector StartPosition;
+		if (wall < 6) { // Side walls
+			StartPosition = WallCenter - (RightVectors[wall] * (HexagonWidth / 2 - ColSpacing / 2)) - (UpVectors[wall] * (HexagonHeight / 2 - RowSpacing / 2));
+		}
+		else { // Top and bottom walls
+			// Adjust StartPosition for top and bottom walls to ensure cameras are centered and evenly distributed
+			StartPosition = WallCenter - (RightVectors[wall] * (HexagonHeight / 2 - RowSpacing / 2)) - (UpVectors[wall] * (HexagonWidth / 2 - ColSpacing / 2));
+		}
+
+		for (int row = 0; row < HexagonRows; ++row) {
+			for (int col = 0; col < HexagonCols; ++col) {
+				FVector SpawnLocation;
+				if (wall < 6) { // Side walls
+					SpawnLocation = StartPosition + (RightVectors[wall] * ColSpacing * col) + (UpVectors[wall] * RowSpacing * row);
+				}
+				else { // Top and bottom walls
+					// Adjust SpawnLocation calculation for top and bottom walls
+					SpawnLocation = StartPosition + (RightVectors[wall] * RowSpacing * row) + (UpVectors[wall] * ColSpacing * col);
+				}
+
+				SpawnLocation.Z += BaseHexagonHeightOffset;
+
+				        // Define the end point of the line trace
+				FVector EndPoint = SpawnLocation + (WallNormals[wall] * -FarClipDistance); // Example: 1000 units in the direction of the wall normal
+				FHitResult HitResult;
+				FCollisionQueryParams QueryParams;
+				QueryParams.AddIgnoredActor(this); // Ignore the camera manager actor itself in the trace
+
+			    // Perform the line trace
+				bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, SpawnLocation, EndPoint, ECC_Visibility, QueryParams);
+
+
+				if (bHit && HitResult.GetActor() != nullptr && HitResult.GetActor()->Tags.Contains(FName("PointOfInterest"))) {
+
+					// Visualize the line trace
+					FColor LineColor = FColor::Green;
+					float LineDuration = 10.0f; // Duration in seconds for how long the line should be visible
+					bool bPersistentLines = false; // Set to true if you want the line to be unaffected by the duration and persist in the world
+					float LineThickness = 1.0f; // Thickness of the line in world units
+					DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
+
+					// If hit a point of interest, spawn the camera
+					FRotator SpawnRotation = WallNormals[wall].Rotation();
+					SpawnRotation.Yaw += 180.0f; // Rotate the camera to face outward from the hexagon wall
+
+					if (wall == 6) { // Top wall
+						SpawnRotation.Pitch += 180.0f;
+					}
+
+					SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
+				}
+				else {
+					FColor LineColor = FColor::Red;
+					float LineDuration = 10.0f; // Duration in seconds for how long the line should be visible
+					bool bPersistentLines = false; // Set to true if you want the line to be unaffected by the duration and persist in the world
+					float LineThickness = 1.0f; // Thickness of the line in world units
+					DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
+
+				}
+			}
+		}
+	}
 }
 
 void ACameraManager::SpawnCameraAtLocation(FVector Location, FRotator Rotation){
@@ -183,19 +313,14 @@ void ACameraManager::SpawnCameraAtLocation(FVector Location, FRotator Rotation){
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 
-	AActor* NewCamera = GetWorld()->SpawnActor<AActor>(CameraActorClassRef, Location, Rotation, SpawnParams);
-	if (NewCamera) {
-		AddCameraToList(Location, Rotation, SpawnParams);
-	}
+	AddCameraToList(Location, Rotation, SpawnParams);
+
 }
 
 void ACameraManager::SpawnCamerasInSphere() {
 	float radius, theta;
 	FVector SpawnLocation;
 	FRotator SpawnRotation;
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = GetInstigator();
 
 	for (int32 i = 0; i < NumOfCameras; i++)
 	{
@@ -211,7 +336,7 @@ void ACameraManager::SpawnCamerasInSphere() {
 		SpawnLocation = FVector(x, y, z) * SphereRadius;
 		SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
 
-		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
 	}
 }
 
@@ -224,6 +349,8 @@ void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotati
 	if (NewCamera) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(NewCamera);
 		DepthCamera->SetCameraName(NumOfCamerasInScene);
+		DepthCamera->SetActorHiddenInGame(false);
+
 		
 		if(bRandomRadius)
 			DepthCamera->SetDistanceFromLookTarget(NewDistance);
@@ -231,11 +358,13 @@ void ACameraManager::AddCameraToList(FVector SpawnLocation, FRotator SpawnRotati
 			DepthCamera->SetDistanceFromLookTarget(SphereRadius);
 
 		DepthCamera->Camera->CurrentAperture = 22.0f;
-		DepthCamera->SceneRGBDCapture->HiddenActors.Add(BP_SphereRef);
 		DepthCameras.Add(NewCamera);
 	
 		NumOfCamerasInScene++;
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 20.0f, FColor::Green, FString::Printf(TEXT("Num of Cameras: %d"), NumOfCamerasInScene));
+
 }
 
 void ACameraManager::SpawnCamerasInHemisphere() {
@@ -253,11 +382,8 @@ void ACameraManager::SpawnCamerasInHemisphere() {
         FVector SpawnLocation = FVector(x, y, z) * SphereRadius;
         FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
 
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = GetInstigator();
 
-        AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
     }
 }
 
@@ -276,19 +402,18 @@ void ACameraManager::SpawnStereoCamerasInHemisphere() {
 
         FVector BaseLocation = FVector(x, y, z) * SphereRadius;
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = GetInstigator();
+
 
         // Spawn left camera
         FVector LeftEyeLocation = BaseLocation + FVector(0, -EyeSeparation / 2, 0);
         FRotator LeftEyeRotation = UKismetMathLibrary::FindLookAtRotation(LeftEyeLocation, FVector::ZeroVector);
-        AddCameraToList(LeftEyeLocation, LeftEyeRotation, SpawnParams);
+		SpawnCameraAtLocation(LeftEyeLocation, LeftEyeRotation);
 
         // Spawn right camera
         FVector RightEyeLocation = BaseLocation + FVector(0, EyeSeparation / 2, 0);
         FRotator RightEyeRotation = UKismetMathLibrary::FindLookAtRotation(RightEyeLocation, FVector::ZeroVector);
-        AddCameraToList(RightEyeLocation, RightEyeRotation, SpawnParams);
+		SpawnCameraAtLocation(RightEyeLocation, RightEyeRotation);
+
     }
 }
 
@@ -313,11 +438,7 @@ void ACameraManager::SpawnCamerasInCircle(FString axis) {
         FVector SpawnLocation = FVector(x, y, z) * SphereRadius;
         FRotator SpawnRotation = UKismetMathLibrary::FindLookAtRotation(SpawnLocation, FVector::ZeroVector);
 
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = GetInstigator();
-
-		AddCameraToList(SpawnLocation, SpawnRotation, SpawnParams);
+		SpawnCameraAtLocation(SpawnLocation, SpawnRotation);
     }
 }
 
@@ -351,7 +472,9 @@ void ACameraManager::RenderImages() {
 
 	for (auto camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(camera);
+		DepthCamera->EnableCamera();
 		DepthCamera->RenderImages(bCaptureMask, MetaHumanMaskMaterialInstance);
+		DepthCamera->DisableCamera();
 
 		// Get the camera's world position and rotation.
 		FVector Position = camera->GetActorLocation();
@@ -430,3 +553,4 @@ void ACameraManager::RenderImages() {
     // Save the JSON string to a file.
     FFileHelper::SaveStringToFile(JsonString, *(FPaths::ProjectDir() + FString("/Images/CameraData.json")));
 }
+

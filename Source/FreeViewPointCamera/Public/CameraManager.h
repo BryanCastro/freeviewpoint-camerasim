@@ -24,7 +24,8 @@ enum class CameraSetupEnum : uint8
 	CIRCLE_YZ  UMETA(DisplayName = "CIRCLE_PLANE_YZ"),
 	HEMI_SPHERE UMETA(DisplayName = "SEMI_SPHERE"),
 	STEREO_HEMISPHERE UMETA(DisplayName = "STEREO_HEMISPHERE"),
-	CUBE_STEREO UMETA(DisplayName = "CUBE_STEREO")
+	CUBE_STEREO UMETA(DisplayName = "CUBE_STEREO"),
+	HEXAGON UMETA(DisplayName = "HEXAGON")
 };
 
 UCLASS()
@@ -47,18 +48,37 @@ protected:
 	#endif
 	TArray<AActor*> DepthCameras;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings", meta=(AllowPrivateAccess="true"))
-	int NumOfCameras = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
-	float SphereRadius = 1000.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Settings", meta = (AllowPrivateAccess = "true"))
 	float CubeSize = 1000.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
-	int Rows=1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
-	int Cols = 1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Settings", meta = (AllowPrivateAccess = "true"))
+	int CubeRows = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Settings", meta = (AllowPrivateAccess = "true"))
+	int CubeCols = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cube Settings", meta = (AllowPrivateAccess = "true"))
+	float BaseCubeHeightOffset = 0.0f;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sphere Settings", meta=(AllowPrivateAccess="true"))
+	int NumOfCameras = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sphere Settings", meta = (AllowPrivateAccess = "true"))
+	float SphereRadius = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sphere Settings", meta = (AllowPrivateAccess = "true"))
 	bool bRandomRadius = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera Settings", meta = (AllowPrivateAccess = "true"))
+	float FarClipDistance=1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hexagon Settings", meta = (AllowPrivateAccess = "true"))
+	float HexagonHeight = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hexagon Settings", meta = (AllowPrivateAccess = "true"))
+	float HexagonWidth = 1000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hexagon Settings", meta = (AllowPrivateAccess = "true"))
+	float BaseHexagonHeightOffset = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hexagon Settings", meta = (AllowPrivateAccess = "true"))
+	int HexagonRows = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hexagon Settings", meta = (AllowPrivateAccess = "true"))
+	int HexagonCols = 1;
 
 	void SpawnCamerasInSphere();
 	void SpawnCamerasInHemisphere();
@@ -67,6 +87,8 @@ protected:
 	void SpawnCameras();
 	void SpawnStereoCamerasInHemisphere();
 	void SpawnCamerasOnCubeWalls();
+	void SpawnCamerasOnHexagonWalls();
+
 	void AddCameraToList(FVector SpawnLocation, FRotator SpawnRotation, FActorSpawnParameters SpawnParams);
 	void SpawnCameraAtLocation(FVector Location, FRotator Rotation);
 
@@ -80,8 +102,6 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void RenderImages();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Render Settings")
-	AStaticMeshActor* BP_SphereRef;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Render Settings")
 	bool bCaptureMask = true;

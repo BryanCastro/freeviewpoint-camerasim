@@ -58,6 +58,8 @@ public:
 	void SetFarClipDistance(float FarClipDistance);
 	void SetDistanceFromLookTarget(float Distance);
 	float GetDistanceFromLookTarget();
+	void DisableCamera();
+	void EnableCamera();
 	FString GetCameraName();
 	void SetCameraName(int index);
 
@@ -69,6 +71,9 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Render Settings")
 	FString CameraName;
+
+	void SetupSceneCaptureComponent(UWorld* World, USceneCaptureComponent2D* SceneCaptureComponent);
+	void ApplyPostProcessSettingsToSceneCapture(UWorld* World, USceneCaptureComponent2D* SceneCaptureComponent);
 
 public:	
 	// Called every frame
