@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "DepthCameraActor.generated.h"
+
 
 class USceneCaptureComponent2D;
 class UCineCameraComponent;
@@ -25,18 +27,12 @@ public:
 	UCineCameraComponent* Camera;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneCaptureComponent2D* SceneRGBDCapture;
-	UPROPERTY(VisibleAnywhere)
-	USceneCaptureComponent2D* SceneRGBCapture;
-	UPROPERTY(VisibleAnywhere)
-	USceneCaptureComponent2D* SceneMaskCapture;
+	USceneCaptureComponent2D* SceneCapture;
+
 	
 	UPROPERTY()
-	UTextureRenderTarget2D* RenderRGBDTarget;
-	UPROPERTY()
-	UTextureRenderTarget2D* RenderRGBTarget;
-	UPROPERTY()
-	UTextureRenderTarget2D* RenderMaskTarget;
+	UTextureRenderTarget2D* RenderTarget;
+
 
 	UPROPERTY(EditAnywhere, Category = "Render Settings")
 	int ResolutionX=256;
@@ -54,7 +50,7 @@ public:
 
 	void RenderImages(bool bCaptureMask, UMaterialInstance* MetaHumanMaskMaterialInstance);
 	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
-	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture);
+	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture2D);
 	void SetFarClipDistance(float FarClipDistance);
 	void SetDistanceFromLookTarget(float Distance);
 	float GetDistanceFromLookTarget();
@@ -62,6 +58,8 @@ public:
 	void EnableCamera();
 	FString GetCameraName();
 	void SetCameraName(int index);
+	void RenderImage(USceneCaptureComponent2D* SceneCapture2D, ETextureRenderTargetFormat TargetFormat, ESceneCaptureSource SceneCaptureSource, bool AlwaysPersisting = false);
+
 
 	FTimerHandle UnusedHandle;
 

@@ -31,21 +31,21 @@ ADepthCameraActor::ADepthCameraActor()
 	
 	Camera = CreateDefaultSubobject<UCineCameraComponent>(TEXT("Camera"));
 	
-	SceneRGBDCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneRGBDCapture"));
-	SceneRGBDCapture->SetupAttachment(Camera);
-	SceneRGBCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneRGBCapture"));
-	SceneRGBCapture->SetupAttachment(Camera);
-	SceneMaskCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneMaskCapture"));
-	SceneMaskCapture->SetupAttachment(Camera);
+	SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture"));
+	SceneCapture->SetupAttachment(Camera);
 
-	// Generate a new GUID
-	//FGuid NewGuid = FGuid::NewGuid();
-	//FString GuidString = NewGuid.ToString();
-	//FName UniqueName = FName(*FString::Printf(TEXT("RenderRGBDTarget_%s"), *GuidString));
+	RenderTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderTarget"));
 
-	RenderRGBDTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBDTarget"));
-	RenderRGBTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderRGBTarget"));
-	RenderMaskTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("RenderMaskTarget"));
+}
+
+void ADepthCameraActor::RenderImage(USceneCaptureComponent2D* SceneCapture2D, ETextureRenderTargetFormat TargetFormat, ESceneCaptureSource SceneCaptureSource, bool AlwaysPersisting) {
+	RenderTarget->RenderTargetFormat = TargetFormat;
+	RenderTarget->UpdateResourceImmediate(true);
+
+	SceneCapture2D->CaptureSource = SceneCaptureSource;
+	SceneCapture2D->bAlwaysPersistRenderingState = AlwaysPersisting;
+	SceneCapture2D->CaptureScene();
+
 }
 
 // Called when the game starts or when spawned
@@ -53,56 +53,25 @@ void ADepthCameraActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	RenderRGBDTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderRGBDTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
-	RenderRGBDTarget->UpdateResourceImmediate(true);
+	RenderTarget->InitAutoFormat(ResolutionX, ResolutionY);
+	RenderTarget->UpdateResourceImmediate(true);
 
-
-	RenderRGBTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderRGBTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
-	RenderRGBTarget->UpdateResourceImmediate(true); 
-
-	RenderMaskTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderMaskTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_R32f;
-	RenderMaskTarget->UpdateResourceImmediate(true);
-
-	SceneRGBDCapture->TextureTarget = RenderRGBDTarget;
-	SceneRGBDCapture->TextureTarget->ClearColor = FLinearColor::Black;
-	SceneRGBDCapture->CaptureSource = ESceneCaptureSource::SCS_SceneDepth;
-	SceneRGBDCapture->bCaptureEveryFrame = false;
-	SceneRGBDCapture->bCaptureOnMovement = false;
-	SceneRGBDCapture->bAlwaysPersistRenderingState = false;
+	SceneCapture->TextureTarget = RenderTarget;
+	SceneCapture->TextureTarget->ClearColor = FLinearColor::Black;
+	SceneCapture->bCaptureEveryFrame = false;
+	SceneCapture->bCaptureOnMovement = false;
+	SceneCapture->bAlwaysPersistRenderingState = false;
 
 	// Enable important flags for capturing lighting
-	SceneRGBDCapture->ShowFlags.SetLighting(true);
-	SceneRGBDCapture->ShowFlags.SetDynamicShadows(true);
-	SceneRGBDCapture->ShowFlags.SetGlobalIllumination(true);
+	SceneCapture->ShowFlags.SetLighting(true);
+	SceneCapture->ShowFlags.SetDynamicShadows(true);
+	SceneCapture->ShowFlags.SetGlobalIllumination(true);
 
-	SceneRGBCapture->TextureTarget = RenderRGBTarget;
-	SceneRGBCapture->TextureTarget->ClearColor = FLinearColor::White;
-	SceneRGBCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-	SceneRGBCapture->bCaptureEveryFrame = false;
-	SceneRGBCapture->bCaptureOnMovement = false;
-	SceneRGBCapture->bAlwaysPersistRenderingState = false;
-	ApplyPostProcessSettingsToSceneCapture(GetWorld(), SceneRGBCapture);
+	SceneCapture->bCaptureEveryFrame = false;
+	SceneCapture->bCaptureOnMovement = false;
+	//SceneCapture->bAlwaysPersistRenderingState = true;
 
-
-	// Enable important flags for capturing lighting
-	SceneRGBCapture->ShowFlags.SetLighting(true);
-	SceneRGBCapture->ShowFlags.SetDynamicShadows(true);
-	SceneRGBCapture->ShowFlags.SetGlobalIllumination(true);
-
-	SceneMaskCapture->TextureTarget = RenderMaskTarget;
-	SceneMaskCapture->TextureTarget->ClearColor = FLinearColor::White;
-	SceneMaskCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-	SceneMaskCapture->bCaptureEveryFrame = false;
-	SceneMaskCapture->bCaptureOnMovement = false;
-	SceneMaskCapture->bAlwaysPersistRenderingState = true;
-
-	// Enable important flags for capturing lighting
-	SceneMaskCapture->ShowFlags.SetLighting(true);
-	SceneMaskCapture->ShowFlags.SetDynamicShadows(true);
-	SceneMaskCapture->ShowFlags.SetGlobalIllumination(true);
+	ApplyPostProcessSettingsToSceneCapture(GetWorld(), SceneCapture);
 
 }
 
@@ -114,17 +83,17 @@ void ADepthCameraActor::SetCameraName(int index) {
 	CameraName = FString::Printf(TEXT("Camera_%d"), index);
 }
 
-void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture) {
+void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture2D) {
 	int32 RandomID = FMath::RandRange(1, 100000);
 
-	if (SceneCapture) {
-		SceneCapture->FOVAngle = Camera->FieldOfView;
+	if (SceneCapture2D) {
+		SceneCapture2D->FOVAngle = Camera->FieldOfView;
 		// Set custom projection matrix
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Green, FString::Printf(TEXT("DepthCameraActor.cpp: FOVAngle %f"), SceneCapture->FOVAngle));
 
-		const float FOV = SceneCapture->FOVAngle * (float)PI / 360.0f;
-		const float AspectRatio = (float)SceneCapture->TextureTarget->GetSurfaceWidth() / (float)SceneCapture->TextureTarget->GetSurfaceHeight();
+		const float FOV = SceneCapture2D->FOVAngle * (float)PI / 360.0f;
+		const float AspectRatio = (float)SceneCapture2D->TextureTarget->GetSurfaceWidth() / (float)SceneCapture2D->TextureTarget->GetSurfaceHeight();
 
 		if (GEngine)
 			GEngine->AddOnScreenDebugMessage(0, 5.0f, FColor::Green, FString::Printf(TEXT("DepthCameraActor.cpp: FOV %f"), FOV));
@@ -146,8 +115,8 @@ void ADepthCameraActor::SetFarClipPlane(USceneCaptureComponent2D* SceneCapture) 
 			Near
 		);
 
-		SceneCapture->bUseCustomProjectionMatrix = true;
-		SceneCapture->CustomProjectionMatrix = ProjectionMatrix;
+		SceneCapture2D->bUseCustomProjectionMatrix = true;
+		SceneCapture2D->CustomProjectionMatrix = ProjectionMatrix;
 		
 	}
 
@@ -158,34 +127,28 @@ FString ADepthCameraActor::GetCameraName() {
 }
 
 void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaHumanMaskMaterialInstance){
-	// Update the time accumulator
-	//TimeAccumulator += DeltaTime;
-
-	// Check if 1/24th of a second has passed
-	//if (TimeAccumulator >= (1.0f / 24.0f) && CurrentFramesCaptured <= FramesToCapture)
-	//{
-
-		// Capture the scene to update the render target
-		SceneRGBDCapture->CaptureScene();
-		SceneRGBCapture->CaptureScene();
-
-		if (bCaptureMask) {
-
-			SceneMaskCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 1.0f);
-			SceneMaskCapture->CaptureScene();
-		}
-		
 
 		FString Name = GetCameraName();
-		// Call the function to save the render targets
-		SaveRenderTargetToDisk(RenderRGBDTarget, Name + FString("_RGBD"), true);
-		SaveRenderTargetToDisk(RenderRGBTarget, Name + FString("_RGB"));
-		SaveRenderTargetToDisk(RenderMaskTarget, Name + FString("_Mask"), true);
-		// Reset the time accumulator
-		//TimeAccumulator -= (1.0f / 24.0f);
 
-		//CurrentFramesCaptured++;
-  //	}
+		RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_RGBA16f, ESceneCaptureSource::SCS_SceneDepth);
+		SaveRenderTargetToDisk(RenderTarget,Name+FString("_RGBD"), true);
+		RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_RGBA16f, ESceneCaptureSource::SCS_FinalColorLDR);
+		SaveRenderTargetToDisk(RenderTarget,Name + FString("_RGB"), false);
+
+		if (bCaptureMask) {
+			SceneCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 1.0f);
+			RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_R32f, ESceneCaptureSource::SCS_FinalColorLDR, true);
+			SaveRenderTargetToDisk(RenderTarget, Name + FString("_Mask"), true);
+		}
+		
+		if (RenderTarget)
+		{
+			SceneCapture->ConditionalBeginDestroy();
+			SceneCapture = nullptr;
+			RenderTarget->ConditionalBeginDestroy();
+			RenderTarget = nullptr;
+		}
+
 }
 
 
@@ -203,23 +166,14 @@ const FRotator ADepthCameraActor::GetRotation(){
 	return Camera->GetComponentRotation();
 }
 
-#include "Engine/TextureRenderTarget2D.h"
-#include "Engine/Texture2D.h"
-#include "Kismet/KismetRenderingLibrary.h"
-#include "Modules/ModuleManager.h"
-#include "IImageWrapperModule.h"
-#include "IImageWrapper.h"
-#include "Misc/FileHelper.h"
-#include "HAL/FileManager.h"
-
-void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth)
+void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget2D, FString FileName, bool bIsDepth)
 {
-	if (!RenderTarget)
+	if (!RenderTarget2D)
 		return;
 
-	FTextureRenderTargetResource* RenderTargetResource = RenderTarget->GameThread_GetRenderTargetResource();
-	int32 Width = RenderTarget->SizeX;
-	int32 Height = RenderTarget->SizeY;
+	FTextureRenderTargetResource* RenderTargetResource = RenderTarget2D->GameThread_GetRenderTargetResource();
+	int32 Width = RenderTarget2D->SizeX;
+	int32 Height = RenderTarget2D->SizeY;
 
 	TArray<uint8> RawData;
 

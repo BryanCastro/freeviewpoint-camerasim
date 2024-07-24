@@ -108,11 +108,7 @@ void ACameraManager::BeginPlay()
 	for (auto Camera : DepthCameras) {
 		ADepthCameraActor* DepthCamera = Cast<ADepthCameraActor>(Camera);
 		DepthCamera->SetFarClipDistance(FarClipDistance);
-		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBCapture);
-		DepthCamera->SetFarClipDistance(FarClipDistance);
-		DepthCamera->SetFarClipPlane(DepthCamera->SceneRGBDCapture);
-		DepthCamera->SetFarClipDistance(FarClipDistance);
-		DepthCamera->SetFarClipPlane(DepthCamera->SceneMaskCapture);
+		DepthCamera->SetFarClipPlane(DepthCamera->SceneCapture);
 		DepthCamera->DisableCamera();
 
 		//DepthCamera->SetCameraName(CameraName);
