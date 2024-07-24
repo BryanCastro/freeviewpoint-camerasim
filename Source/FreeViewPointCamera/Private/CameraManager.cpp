@@ -280,10 +280,10 @@ void ACameraManager::SpawnCamerasOnHexagonWalls() {
 
 					// Visualize the line trace
 					FColor LineColor = FColor::Green;
-					float LineDuration = 10.0f; // Duration in seconds for how long the line should be visible
+					float LineDuration = 2.0f; // Duration in seconds for how long the line should be visible
 					bool bPersistentLines = false; // Set to true if you want the line to be unaffected by the duration and persist in the world
 					float LineThickness = 1.0f; // Thickness of the line in world units
-					DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
+					//DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
 
 					// If hit a point of interest, spawn the camera
 					FRotator SpawnRotation = WallNormals[wall].Rotation();
@@ -297,10 +297,10 @@ void ACameraManager::SpawnCamerasOnHexagonWalls() {
 				}
 				else {
 					FColor LineColor = FColor::Red;
-					float LineDuration = 10.0f; // Duration in seconds for how long the line should be visible
+					float LineDuration = 2.0f; // Duration in seconds for how long the line should be visible
 					bool bPersistentLines = false; // Set to true if you want the line to be unaffected by the duration and persist in the world
 					float LineThickness = 1.0f; // Thickness of the line in world units
-					DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
+					//DrawDebugLine(GetWorld(), SpawnLocation, EndPoint, LineColor, bPersistentLines, LineDuration, 0, LineThickness);
 
 				}
 			}

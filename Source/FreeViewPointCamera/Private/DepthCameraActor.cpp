@@ -63,7 +63,7 @@ void ADepthCameraActor::BeginPlay()
 	RenderRGBTarget->UpdateResourceImmediate(true); 
 
 	RenderMaskTarget->InitAutoFormat(ResolutionX, ResolutionY);
-	RenderMaskTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
+	RenderMaskTarget->RenderTargetFormat = ETextureRenderTargetFormat::RTF_R32f;
 	RenderMaskTarget->UpdateResourceImmediate(true);
 
 	SceneRGBDCapture->TextureTarget = RenderRGBDTarget;
@@ -203,7 +203,14 @@ const FRotator ADepthCameraActor::GetRotation(){
 	return Camera->GetComponentRotation();
 }
 
-
+#include "Engine/TextureRenderTarget2D.h"
+#include "Engine/Texture2D.h"
+#include "Kismet/KismetRenderingLibrary.h"
+#include "Modules/ModuleManager.h"
+#include "IImageWrapperModule.h"
+#include "IImageWrapper.h"
+#include "Misc/FileHelper.h"
+#include "HAL/FileManager.h"
 
 void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth)
 {
@@ -211,47 +218,70 @@ void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTar
 		return;
 
 	FTextureRenderTargetResource* RenderTargetResource = RenderTarget->GameThread_GetRenderTargetResource();
-	FReadSurfaceDataFlags ReadSurfaceDataFlags(RCM_UNorm);
-	ReadSurfaceDataFlags.SetLinearToGamma(true); // Ensure gamma correction is applied
-
 	int32 Width = RenderTarget->SizeX;
 	int32 Height = RenderTarget->SizeY;
 
-	TArray<FColor> Bitmap;
-	Bitmap.AddUninitialized(Width * Height);
-
-	// Read the render target surface data into an array
-	RenderTargetResource->ReadPixels(Bitmap, ReadSurfaceDataFlags);
+	TArray<uint8> RawData;
 
 	if (bIsDepth)
 	{
-		// Initialize a depth buffer with a large initial depth for each pixel
-		TArray<float> DepthBuffer;
-		DepthBuffer.AddUninitialized(Width * Height);
-		for (auto& Depth : DepthBuffer)
+		// Read depth data from the render target
+		TArray<FFloat16Color> Float16Data;
+		RenderTargetResource->ReadFloat16Pixels(Float16Data);
+
+		// Initialize the raw data array with 16-bit depth values
+		RawData.AddUninitialized(Width * Height * sizeof(uint16));
+
+		// Find min and max depth values for normalization
+		float MinDepth = FLT_MAX;
+		float MaxDepth = FLT_MIN;
+		for (const FFloat16Color& DepthColor : Float16Data)
 		{
-			Depth = FLT_MAX;
+			float Depth = DepthColor.R;
+			if (Depth < MinDepth) MinDepth = Depth;
+			if (Depth > MaxDepth) MaxDepth = Depth;
 		}
 
-		// Convert to grayscale and implement depth testing
-		for (int32 i = 0; i < Bitmap.Num(); ++i)
+		// Debug: Log the min and max depth values
+		UE_LOG(LogTemp, Warning, TEXT("MinDepth: %f, MaxDepth: %f"), MinDepth, MaxDepth);
+
+		// Normalize and store depth values in 16-bit format
+		for (int32 i = 0; i < Float16Data.Num(); ++i)
 		{
-			auto& Color = Bitmap[i];
-			float NewDepth = Color.R / 255.0f; // Assuming depth is stored in the red channel and normalized to [0, 1]
-			// Only overwrite the pixel if the new pixel is closer to the camera
-			if (NewDepth < DepthBuffer[i])
-			{
-				uint8 GrayValue = Color.R;
-				Color = FColor(GrayValue, GrayValue, GrayValue, 255); // Set RGB to the same gray value and Alpha to 255
-				DepthBuffer[i] = NewDepth;
-			}
+			float NewDepth = Float16Data[i].R; // Assuming depth is stored in the red channel
+			float NormalizedDepth = (NewDepth - MinDepth) / (MaxDepth - MinDepth);
+			uint16 DepthValue16 = static_cast<uint16>(NormalizedDepth * 65535.0f); // Convert to 16-bit depth
+			RawData[i * 2] = DepthValue16 & 0xFF; // Lower byte
+			RawData[i * 2 + 1] = (DepthValue16 >> 8) & 0xFF; // Upper byte
 		}
+	}
+	else
+	{
+		TArray<FColor> Bitmap;
+		Bitmap.AddUninitialized(Width * Height);
+
+		// Read the render target surface data into an array
+		FReadSurfaceDataFlags ReadSurfaceDataFlags(RCM_UNorm);
+		ReadSurfaceDataFlags.SetLinearToGamma(true); // Ensure gamma correction is applied
+		RenderTargetResource->ReadPixels(Bitmap, ReadSurfaceDataFlags);
+
+		// Store the color data as raw bytes
+		RawData.SetNum(Width * Height * 4); // 4 bytes per pixel (RGBA)
+		FMemory::Memcpy(RawData.GetData(), Bitmap.GetData(), RawData.Num());
 	}
 
 	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
 	TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
 
-	ImageWrapper->SetRaw(Bitmap.GetData(), Bitmap.Num() * sizeof(FColor), Width, Height, ERGBFormat::BGRA, 8);
+	// Set raw data and save as 16-bit grayscale PNG if depth, otherwise save as normal image
+	if (bIsDepth)
+	{
+		ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width, Height, ERGBFormat::Gray, 16);
+	}
+	else
+	{
+		ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width, Height, ERGBFormat::BGRA, 8);
+	}
 
 	// Get compressed data as TArray64<uint8>
 	const TArray64<uint8>& PNGData64 = ImageWrapper->GetCompressed(100);
