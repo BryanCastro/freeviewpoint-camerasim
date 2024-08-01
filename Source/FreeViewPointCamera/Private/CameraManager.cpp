@@ -205,6 +205,9 @@ void ACameraManager::SpawnCamerasOnCubeWalls() {
 }
 
 void ACameraManager::SpawnCamerasOnHexagonWalls() {
+
+	FarClipDistance = HexagonWidth;
+
 	FVector WallNormals[8] = {
 		FVector(FMath::Cos(FMath::DegreesToRadians(0)), FMath::Sin(FMath::DegreesToRadians(0)), 0),
 		FVector(FMath::Cos(FMath::DegreesToRadians(60)), FMath::Sin(FMath::DegreesToRadians(60)), 0),
