@@ -14,6 +14,17 @@ class UTextureRenderTarget2D;
 class APostProcessVolume;
 class UMaterialInstance;
 
+UENUM(BlueprintType) // This macro makes the enum available in Blueprints (optional)
+enum class ERenderFormat : uint8
+{
+	DEPTH UMETA(DisplayName = "Depth"),
+	RGBA UMETA(DisplayName = "Color"),
+	MASK UMETA(DisplayName = "Mask"),
+	
+	// Add other formats as needed
+};
+
+
 UCLASS()
 class FREEVIEWPOINTCAMERA_API ADepthCameraActor : public AActor
 {
@@ -49,7 +60,7 @@ public:
 	const FRotator GetRotation();
 
 	void RenderImages(bool bCaptureMask, UMaterialInstance* MetaHumanMaskMaterialInstance);
-	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, bool bIsDepth=false);
+	void SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget, FString FileName, ERenderFormat RenderFormat);
 	void SetFarClipPlane(USceneCaptureComponent2D* SceneCapture2D);
 	void SetFarClipDistance(float FarClipDistance);
 	void SetDistanceFromLookTarget(float Distance);

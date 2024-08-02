@@ -504,8 +504,8 @@ void ACameraManager::RenderImages() {
 
 		// Create a new JSON object for the Filmback settings.
 		TSharedPtr<FJsonObject> FilmbackObject = MakeShareable(new FJsonObject);
-		FilmbackObject->SetNumberField("SensorWidth", SensorWidth);
-		FilmbackObject->SetNumberField("SensorHeight", SensorHeight);
+		FilmbackObject->SetNumberField("SensorWidth (mm)", SensorWidth);
+		FilmbackObject->SetNumberField("SensorHeight (mm)", SensorHeight);
 		FilmbackObject->SetNumberField("SensorAspectRatio", SensorAspectRatio);
 
 
@@ -519,20 +519,19 @@ void ACameraManager::RenderImages() {
 
 		// Create a new JSON object for the Lens settings.
 		TSharedPtr<FJsonObject> LensObject = MakeShareable(new FJsonObject);
-		LensObject->SetNumberField("MinFocalLength", MinFocalLength);
-		LensObject->SetNumberField("MaxFocalLength", MaxFocalLength);
-		LensObject->SetNumberField("Horizontal Field of View", FieldOfView);
+		LensObject->SetNumberField("MinFocalLength (mm)", MinFocalLength);
+		LensObject->SetNumberField("MaxFocalLength (mm)", MaxFocalLength);
+		LensObject->SetNumberField("Horizontal Field of View (degrees)", FieldOfView);
 		// Add other lens settings here...
 
 		TSharedPtr<FJsonObject> OtherObject = MakeShareable(new FJsonObject);
-		OtherObject->SetNumberField("Distance from Scene(cm)", SphereRadius);
-		OtherObject->SetNumberField("Near Clip Plane", 0.1f);
-		OtherObject->SetNumberField("Far Clip Plane", SphereRadius * 2);
+		OtherObject->SetNumberField("Near Clip Plane (cm)", 0.1f);
+		OtherObject->SetNumberField("Far Clip Plane (cm)", FarClipDistance);
 		
 		// Create a new JSON object for this camera.
 		TSharedPtr<FJsonObject> CameraObject = MakeShareable(new FJsonObject);
-		CameraObject->SetObjectField("World Position", PositionObject);
-		CameraObject->SetObjectField("World Rotation", RotationObject);
+		CameraObject->SetObjectField("Camera World Position", PositionObject);
+		CameraObject->SetObjectField("Camera World Rotation", RotationObject);
 		CameraObject->SetObjectField("Filmback", FilmbackObject);
 		CameraObject->SetObjectField("Lens", LensObject);
 		CameraObject->SetObjectField("Other", OtherObject);

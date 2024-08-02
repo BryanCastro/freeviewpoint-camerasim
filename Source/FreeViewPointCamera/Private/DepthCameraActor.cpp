@@ -130,15 +130,15 @@ void ADepthCameraActor::RenderImages(bool bCaptureMask, UMaterialInstance* MetaH
 
 		FString Name = GetCameraName();
 
-		RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_RGBA16f, ESceneCaptureSource::SCS_SceneDepth);
-		SaveRenderTargetToDisk(RenderTarget,Name+FString("_RGBD"), true);
+		RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_R32f, ESceneCaptureSource::SCS_SceneDepth);
+		SaveRenderTargetToDisk(RenderTarget,Name+FString("_RGBD"), ERenderFormat::DEPTH);
 		RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_RGBA16f, ESceneCaptureSource::SCS_FinalColorLDR);
-		SaveRenderTargetToDisk(RenderTarget,Name + FString("_RGB"), false);
+		SaveRenderTargetToDisk(RenderTarget,Name + FString("_RGB"), ERenderFormat::RGBA);
 
 		if (bCaptureMask) {
 			SceneCapture->AddOrUpdateBlendable(MetaHumanMaskMaterialInstance, 1.0f);
-			RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_R32f, ESceneCaptureSource::SCS_FinalColorLDR, true);
-			SaveRenderTargetToDisk(RenderTarget, Name + FString("_Mask"), true);
+			RenderImage(SceneCapture, ETextureRenderTargetFormat::RTF_RGBA16f, ESceneCaptureSource::SCS_FinalColorLDR, true);
+			SaveRenderTargetToDisk(RenderTarget, Name + FString("_Mask"), ERenderFormat::MASK);
 		}
 		
 		if (RenderTarget)
@@ -166,7 +166,7 @@ const FRotator ADepthCameraActor::GetRotation(){
 	return Camera->GetComponentRotation();
 }
 
-void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget2D, FString FileName, bool bIsDepth)
+void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTarget2D, FString FileName, ERenderFormat RenderFormat)
 {
 	if (!RenderTarget2D)
 		return;
@@ -175,42 +175,81 @@ void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTar
 	int32 Width = RenderTarget2D->SizeX;
 	int32 Height = RenderTarget2D->SizeY;
 
-	TArray<uint8> RawData;
+	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
 
-	if (bIsDepth)
-	{
-		// Read depth data from the render target
-		TArray<FFloat16Color> Float16Data;
-		RenderTargetResource->ReadFloat16Pixels(Float16Data);
 
-		// Initialize the raw data array with 16-bit depth values
-		RawData.AddUninitialized(Width * Height * sizeof(uint16));
+	if(RenderFormat==ERenderFormat::DEPTH){
+			// Read depth data from the render target
+			TArray<FFloat16Color> Float16Data;
+			RenderTargetResource->ReadFloat16Pixels(Float16Data);
 
-		// Find min and max depth values for normalization
-		float MinDepth = FLT_MAX;
-		float MaxDepth = FLT_MIN;
-		for (const FFloat16Color& DepthColor : Float16Data)
-		{
-			float Depth = DepthColor.R;
-			if (Depth < MinDepth) MinDepth = Depth;
-			if (Depth > MaxDepth) MaxDepth = Depth;
-		}
+			// Initialize the raw data array with 32-bit depth values using the default allocator
+			TArray<uint8, FDefaultAllocator> RawData;
+			RawData.SetNum(Width * Height * sizeof(float)); // Set the correct number of bytes
 
-		// Debug: Log the min and max depth values
-		UE_LOG(LogTemp, Warning, TEXT("MinDepth: %f, MaxDepth: %f"), MinDepth, MaxDepth);
+			// Find min and max depth values for normalization
+			float MinDepth = FLT_MAX;
+			float MaxDepth = FLT_MIN;
+			for (const FFloat16Color& DepthColor : Float16Data)
+			{
+				float Depth = DepthColor.R;
+				if (Depth < MinDepth) MinDepth = Depth;
+				if (Depth > MaxDepth) MaxDepth = Depth;
+			}
 
-		// Normalize and store depth values in 16-bit format
-		for (int32 i = 0; i < Float16Data.Num(); ++i)
-		{
-			float NewDepth = Float16Data[i].R; // Assuming depth is stored in the red channel
-			float NormalizedDepth = (NewDepth - MinDepth) / (MaxDepth - MinDepth);
-			uint16 DepthValue16 = static_cast<uint16>(NormalizedDepth * 65535.0f); // Convert to 16-bit depth
-			RawData[i * 2] = DepthValue16 & 0xFF; // Lower byte
-			RawData[i * 2 + 1] = (DepthValue16 >> 8) & 0xFF; // Upper byte
-		}
+			// Debug: Log the min and max depth values
+			UE_LOG(LogTemp, Warning, TEXT("MinDepth: %f, MaxDepth: %f"), MinDepth, MaxDepth);
+
+			// Normalize and store depth values in 32-bit float format
+			for (int32 i = 0; i < Float16Data.Num(); ++i)
+			{
+				float Depth = Float16Data[i].R; // Assuming depth is stored in the red channel
+				float NormalizedDepth = (Depth - MinDepth) / (MaxDepth - MinDepth); // Normalize to [0, 1]
+				float* DepthValue32 = reinterpret_cast<float*>(&RawData[i * sizeof(float)]);
+				*DepthValue32 = NormalizedDepth; // Store as normalized 32-bit float
+			}
+
+			// Debug: Print out some of the normalized depth values
+			for (int32 i = 0; i < FMath::Min(10, Float16Data.Num()); ++i)
+			{
+				float* DepthValue32 = reinterpret_cast<float*>(&RawData[i * sizeof(float)]);
+				UE_LOG(LogTemp, Warning, TEXT("DepthValue[%d]: %f"), i, *DepthValue32);
+			}
+
+			// Create an image wrapper for EXR
+			TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::EXR);
+
+			// Debug: Check the raw data size
+			UE_LOG(LogTemp, Log, TEXT("RawData size: %d bytes"), RawData.Num());
+
+			// Set the image raw data
+			bool bSetRaw = ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width, Height, ERGBFormat::GrayF, 32);
+
+			// Debug: Check if SetRaw was successful
+			if (!bSetRaw)
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed to set raw data in ImageWrapper."));
+				return;
+			}
+
+			// Get the compressed data into a local variable with the default allocator
+			const TArray<uint8, FDefaultAllocator64>& CompressedData64 = ImageWrapper->GetCompressed(100);
+
+			// Copy data into a TArray with the desired allocator
+			TArray<uint8, FDefaultAllocator> CompressedData;
+			CompressedData.Append(CompressedData64);
+
+			// Save to file
+			FString DirectoryPath = FPaths::ProjectDir() + TEXT("Images");
+			IFileManager::Get().MakeDirectory(*DirectoryPath, true);
+			// Define the file path
+			FString FilePath = DirectoryPath / (FileName + TEXT(".exr"));
+			bool bSuccess = FFileHelper::SaveArrayToFile(CompressedData, *FilePath);
+
 	}
-	else
+	else if(RenderFormat == ERenderFormat::RGBA)
 	{
+		TArray<uint8> RawData;
 		TArray<FColor> Bitmap;
 		Bitmap.AddUninitialized(Width * Height);
 
@@ -222,33 +261,74 @@ void ADepthCameraActor::SaveRenderTargetToDisk(UTextureRenderTarget2D* RenderTar
 		// Store the color data as raw bytes
 		RawData.SetNum(Width * Height * 4); // 4 bytes per pixel (RGBA)
 		FMemory::Memcpy(RawData.GetData(), Bitmap.GetData(), RawData.Num());
-	}
 
-	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>(FName("ImageWrapper"));
-	TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
-
-	// Set raw data and save as 16-bit grayscale PNG if depth, otherwise save as normal image
-	if (bIsDepth)
-	{
-		ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width, Height, ERGBFormat::Gray, 16);
-	}
-	else
-	{
+		TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
 		ImageWrapper->SetRaw(RawData.GetData(), RawData.Num(), Width, Height, ERGBFormat::BGRA, 8);
+		// Get compressed data as TArray64<uint8>
+		const TArray64<uint8>& PNGData64 = ImageWrapper->GetCompressed(100);
+		TArray<uint8> PNGData(PNGData64);
+
+		// Ensure the Images directory exists
+		FString DirectoryPath = FPaths::ProjectDir() + TEXT("Images");
+		IFileManager::Get().MakeDirectory(*DirectoryPath, true);
+
+		// Define the file path
+		FString FilePath = DirectoryPath / (FileName + TEXT(".png"));
+		// Save the PNG file
+		bool bSuccess = FFileHelper::SaveArrayToFile(PNGData, *FilePath);
+	}
+	else if (RenderFormat == ERenderFormat::MASK)
+	{
+		FReadSurfaceDataFlags ReadSurfaceDataFlags(RCM_UNorm);
+		ReadSurfaceDataFlags.SetLinearToGamma(false);
+
+		TArray<FColor> Bitmap;
+		Bitmap.AddUninitialized(Width* Height);
+		// Initialize a depth buffer with a large initial depth for each pixel
+		TArray<float> DepthBuffer;
+		DepthBuffer.AddUninitialized(Width* Height);
+
+		for (auto& Depth : DepthBuffer)
+		{
+			Depth = FLT_MAX;
+		}
+
+		// Read the render target surface data into an array
+		RenderTargetResource->ReadPixels(Bitmap, ReadSurfaceDataFlags);
+
+		// Convert to grayscale and implement depth testing
+		for (int32 i = 0; i < Bitmap.Num(); ++i)
+		{
+			auto& Color = Bitmap[i];
+			float NewDepth = Color.R / 255.0f; // Assuming depth is stored in the red channel and normalized to [0, 1]
+			// Only overwrite the pixel if the new pixel is closer to the camera
+			if (NewDepth < DepthBuffer[i])
+			{
+				uint8 GrayValue = Color.R;
+				Color = FColor(GrayValue, GrayValue, GrayValue, 255); // Set RGB to the same gray value and Alpha to 255
+				DepthBuffer[i] = NewDepth;
+			}
+		}
+
+		TSharedPtr<IImageWrapper> ImageWrapper = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
+
+		ImageWrapper->SetRaw(Bitmap.GetData(), Bitmap.GetAllocatedSize(), RenderTarget->SizeX, RenderTarget->SizeY, ERGBFormat::BGRA, 8);
+
+		// Get compressed data as TArray64<uint8>
+		const TArray64<uint8>& PNGData64 = ImageWrapper->GetCompressed(100);
+		TArray<uint8> PNGData(PNGData64);
+
+		// Ensure the Images directory exists
+		FString DirectoryPath = FPaths::ProjectDir() + TEXT("Images");
+		IFileManager::Get().MakeDirectory(*DirectoryPath, true);
+
+		// Define the file path
+		FString FilePath = DirectoryPath / (FileName + TEXT(".png"));
+		// Save the PNG file
+		bool bSuccess = FFileHelper::SaveArrayToFile(PNGData, *FilePath);
 	}
 
-	// Get compressed data as TArray64<uint8>
-	const TArray64<uint8>& PNGData64 = ImageWrapper->GetCompressed(100);
-	TArray<uint8> PNGData(PNGData64);
 
-	// Ensure the Images directory exists
-	FString DirectoryPath = FPaths::ProjectDir() + TEXT("Images");
-	IFileManager::Get().MakeDirectory(*DirectoryPath, true);
-
-	// Define the file path
-	FString FilePath = DirectoryPath / (FileName + TEXT(".png"));
-	// Save the PNG file
-	bool bSuccess = FFileHelper::SaveArrayToFile(PNGData, *FilePath);
 }
 	
 void ADepthCameraActor::SetDistanceFromLookTarget(float Distance){
