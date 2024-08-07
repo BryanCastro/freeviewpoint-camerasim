@@ -506,6 +506,8 @@ void ACameraManager::RenderImages() {
 		TSharedPtr<FJsonObject> FilmbackObject = MakeShareable(new FJsonObject);
 		FilmbackObject->SetNumberField("SensorWidth (mm)", SensorWidth);
 		FilmbackObject->SetNumberField("SensorHeight (mm)", SensorHeight);
+		FilmbackObject->SetNumberField("SensorResolutionWidth (pixels)", DepthCamera->ResolutionX);
+		FilmbackObject->SetNumberField("SensorResolutionHeight (pixels)", DepthCamera->ResolutionY);
 		FilmbackObject->SetNumberField("SensorAspectRatio", SensorAspectRatio);
 
 
